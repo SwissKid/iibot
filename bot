@@ -3,8 +3,8 @@ owner="swiss"
 nick="swissboxbot"
 server="irc.freenode.net"
 channel="#swisstest"
-ircdir="/root/testing"
-iidir="/root/git/iibot"
+ircdir="/home/swiss/testing"
+iidir="/home/swiss/iibot"
 function msgowner() {
 echo "/privmsg $owner :$@" > "$ircdir/$server/in"
 }
