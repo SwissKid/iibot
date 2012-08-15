@@ -22,6 +22,7 @@ function control_c() {
 
 #command grabbing
 function commandme(){
+	touch "$ircdir/$server/$channel/out"
 	tailf -n1 "$ircdir/$server/$channel/out" | while read -r date time nick msg; do 
 	echo $nick $msg
 	if [ "$(echo $msg | head -c 1)" == '!' ]; then
@@ -89,6 +90,40 @@ function ownermessage(){
 
 	done & 
 }
+
+function servermessage() {
+	touch "$ircdir/$server/out"
+	printf "$ircdir/$server/out" | while read -r date time nick msg; do
+		if [ "$nick" != '=!=' ] && [ "$nick" != '=' ] && [ "$(echo $msg | head -c 1)" == '!' ]; then
+			msg=$(echo $msg | sed -e "s/^!//")
+			set -- $msg
+			command=$1
+			shift
+			rest=$@
+			echo $nick wants me to $command and $@
+			
+			##User Commands
+			if [ "$command" == 'later' ]; then
+				set -- $rest
+				waitnick=$1
+				shift
+				message=$@
+				echo "Waiting to see $nick to send him $message" > "$ircdir/$server/$nick/in"
+				printf "$ircdir/$server/out" | while read -r date time nick msg; do
+					if [ "$nick" == "$waitnick" ]; then
+						echo "/privmsg $waitnick :$message" > "$ircdir/$server/in"
+					fi
+				done
+			fi
+		else
+			echo "Sorry, I don't recognize that command" > "$ircdir/$server/$nick/in"
+		fi
+
+done
+
+}
+
+
 
 while true; do
 	$iidir/ii -s $server -n $nick -f "Iamabot" -i $ircdir &
