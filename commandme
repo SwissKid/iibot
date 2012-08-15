@@ -7,7 +7,7 @@ command=$(echo $start | sed -e "s/^!//")
 
 ##Time to start writing what commands do
 if [ "$command" == 'search' ] || [ "$command" == 'Search' ]; then
-	$iidir/anime $rest > "results.txt"
+	./anime $rest > "results.txt"
 	cat results.txt
 
 ##Time to check space left
