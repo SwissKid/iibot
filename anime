@@ -1,0 +1,18 @@
+#!/bin/bash
+filesgrep=$(ls /home/sftp/files/anime/ | grep $1)
+hdd2grep=$(ls /home/sftp/mount/hdd2/anime/ | grep $1)
+linenumber=$(echo -e "$filesgrep $hdd2grep" | wc -l)
+echo "There were $linenumber files found"
+n=1
+echo -n "The found files are: "
+while [ $n -le $linenumber ]
+do
+	line=$(echo "$filesgrep $hdd2grep" | sed -n "$n"p)
+	if [ "$n" -lt "$linenumber" ];
+	 then
+		echo -n "$line, ";
+	 else
+		echo "$line."
+	fi
+	n=`expr $n + 1`;
+done
