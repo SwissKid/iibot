@@ -9,18 +9,29 @@ else
 	continue
 fi
 
-
-echo "There were $linenumber files found"
-n=1
-echo -n "The found files are: "
-while [ $n -le $linenumber ]
-do
-	line=$(echo "$filesgrep $hdd2grep" | sed -n "$n"p)
-	if [ "$n" -lt "$linenumber" ];
-	 then
-		echo -n "$line, ";
-	 else
-		echo "$line."
+if [ $linenumber != 1 ]; then
+	echo "There were $linenumber files found"
+	n=1
+	if [ $linenumber -le 5 ]; then
+		echo -n "The found files are: "
+		while [ $n -le $linenumber ]
+		do
+			line=$(echo "$filesgrep $hdd2grep" | sed -n "$n"p)
+			if [ "$n" -lt "$linenumber" ];
+			 then
+				echo -n "$line, ";
+			 else
+				echo "$line."
+			fi
+			n=`expr $n + 1`;
+		done
+	else
+		echo "That's way too many to display nicely. Please refine your search terms."
 	fi
-	n=`expr $n + 1`;
-done
+else
+	echo "There was one file found."
+	n=1
+	echo -n "The found file was: "
+	line=$(echo "$filesgrep $hdd2grep" | sed -n "$n"p)
+	echo "$line."	
+fi
