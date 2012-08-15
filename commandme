@@ -1,0 +1,35 @@
+#!/bin/bash
+msg=$@
+start=$1
+shift
+rest=$@
+command=$(echo $start | sed -e "s/^!//")
+
+##Time to start writing what commands do
+if [ "$command" == 'search' ] || [ "$command" == 'Search' ]; then
+	$iidir/anime $rest > "results.txt"
+	cat results.txt
+
+##Time to check space left
+elif [ "$command" == 'space' ] || [ "$command" == 'Space' ]; then
+	
+##Fixing the fact that it's named unintuitively
+	if [ "$rest" == 'hdd1' ]; then
+		rest="/dev/sdb4"
+	fi
+	
+
+	if df -h | grep $rest; then 
+		set -- $(df -h | grep $rest)
+		filesystem=$1
+		size=$2
+		availible=$4
+		used=$5
+		mount=$6
+		echo "On $mount there is $availible availible of $size. $used of this drive is full."
+	else
+		echo "Seems this device cannot be found."
+	fi
+		
+
+fi

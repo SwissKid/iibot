@@ -27,37 +27,39 @@ function commandme(){
 	tailf -n1 "$ircdir/$server/$channel/out" | while read -r date time nick msg; do 
 	echo $nick $msg
 	if [ "$(echo $msg | head -c 1)" == '!' ]; then
-		set -- $msg
-		start=$1
-		shift
-		rest=$@
-		command=$(echo $start | sed -e "s/^!//")
-		
-		##Time to start writing what commands do
-		if [ "$command" == 'search' ] || [ "$command" == 'Search' ]; then
-			echo "$msg"
-			$iidir/anime $rest > "results.txt"
-			cat results.txt
-			cat results.txt > "$ircdir/$server/$channel/in"
-	
-		##Time to check space left
-		elif [ "$command" == 'space' ] || [ "$command" == 'Space' ]; then
-			echo "$msg"
-			if [ "$rest" == 'hdd1' ]; then
-				rest="/dev/sdb4"
-			fi
-			if df -h | grep $rest; then 
-				set -- $(df -h | grep $rest)
-				filesystem=$1
-				size=$2
-				availible=$4
-				used=$5
-				echo "On $rest there is $availible availible of $size. $used of this drive is full." > "$ircdir/$server/$channel/in"
-			else
-				echo "Seems this device cannot be found." > "$ircdir/$server/$channel/in"
-			fi
-
-		fi
+		$iidir/commandme $msg > "$ircdir/$server/$channel/in"
+## Seperating the command from the program
+#		set -- $msg
+#		start=$1
+#		shift
+#		rest=$@
+#		command=$(echo $start | sed -e "s/^!//")
+#		
+#		##Time to start writing what commands do
+#		if [ "$command" == 'search' ] || [ "$command" == 'Search' ]; then
+#			echo "$msg"
+#			$iidir/anime $rest > "results.txt"
+#			cat results.txt
+#			cat results.txt > "$ircdir/$server/$channel/in"
+#	
+#		##Time to check space left
+#		elif [ "$command" == 'space' ] || [ "$command" == 'Space' ]; then
+#			echo "$msg"
+#			if [ "$rest" == 'hdd1' ]; then
+#				rest="/dev/sdb4"
+#			fi
+#			if df -h | grep $rest; then 
+#				set -- $(df -h | grep $rest)
+#				filesystem=$1
+#				size=$2
+#				availible=$4
+#				used=$5
+#				echo "On $rest there is $availible availible of $size. $used of this drive is full." > "$ircdir/$server/$channel/in"
+#			else
+#				echo "Seems this device cannot be found." > "$ircdir/$server/$channel/in"
+#			fi
+#
+#		fi
 			
 
 	fi
