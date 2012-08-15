@@ -2,6 +2,14 @@
 filesgrep=$(ls /home/sftp/files/anime/ | grep $1)
 hdd2grep=$(ls /home/sftp/mount/hdd2/anime/ | grep $1)
 linenumber=$(echo -e "$filesgrep $hdd2grep" | wc -l)
+if [ "$hdd2grep" == '' ] && [ "$filesgrep" == '' ]; then
+	echo "No files found"
+	exit 0
+else
+	continue
+fi
+
+
 echo "There were $linenumber files found"
 n=1
 echo -n "The found files are: "
