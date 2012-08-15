@@ -1,0 +1,72 @@
+#!/bin/bash
+owner="swiss"
+nick="swissboxbot"
+server="irc.freenode.net"
+channels="#swisstest"
+ircdir="/home/swiss/testing/"
+function msgowner() {
+echo "/privmsg $owner :$@" > "$ircdir$server/in"
+}
+
+trap control_c SIGINT
+#ctrl-c inttrupt
+function control_c() {
+	echo -e "quitting\n"
+	rm -r $ircdir$server/*
+	mkdir $ircdir$server/$owner/
+	touch $ircdir$server/$owner/out
+	kill -9 "$iipid"
+	exit 0
+	}
+
+#command grabbing
+function commandme(){
+	tailf -n1 "$ircdir$server/$channel/out" | while read -r date time nick msg; do 
+	echo $nick $msg
+	done
+}
+
+function ownermessage(){
+	tailf -n1 "$ircdir$server/$owner/out" | while read -r date time nick msg; do
+		set -- $msg
+		i=$1
+		shift
+		channel=$1
+		shift
+		message=$@
+		echo "Master wants me to $i $channel and $message"
+		if [ "$(echo $channel | head -c 1)" != "#" ]; then
+			echo $channel
+			newchannel=$(echo "#""$channel")
+			channel="$newchannel"
+			echo $newchannel
+		fi
+		if [ "$i" == 'j' ] || [ "$i" == 'join' ]; then
+			echo "/privmsg $owner :Shall I join $channel?" > "$ircdir$server/in"
+			echo "/j $channel"
+			echo "/j $channel" > "$ircdir$server/in"
+			echo "/privmsg $owner :Joining $channel" > "$ircdir$server/in"
+				
+		elif [ "$i" == 'q' ] || [ "$i" == 'part'] || [ "$i" == 'p' ]; then
+			echo "$msg"
+			msgowner Parting $channel
+			echo "/part $channel" > "$ircdir$server/in"
+		fi
+	done & 
+}
+
+while true; do
+	./ii -s $server -n $nick -f "Iamabot" -i $ircdir &
+	iipid="$!"
+	sleep 5
+	for i in $channels; do
+		echo "/j $i" > $ircdir/$server/in
+	done
+	echo "/privmsg $owner :I AM READY" > $ircdir/$server/in
+	ownermessage
+	wait "$iipid"
+done 
+
+
+
+
