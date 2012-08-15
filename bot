@@ -46,10 +46,9 @@ function commandme(){
 				set -- $(df -h | grep $rest)
 				filesystem=$1
 				size=$2
-				used=$3
-				availible=$5
-				used=$6
-				echo "On $rest there is $availible availible of $size. $used of this drive is full."
+				availible=$4
+				used=$5
+				echo "On $rest there is $availible availible of $size. $used of this drive is full." > "$ircdir/$server/$channel/in"
 			else
 				echo "Seems this device cannot be found."
 			fi
