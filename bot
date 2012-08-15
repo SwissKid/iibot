@@ -91,37 +91,39 @@ function ownermessage(){
 	done & 
 }
 
-function servermessage() {
-	touch "$ircdir/$server/out"
-	printf "$ircdir/$server/out" | while read -r date time nick msg; do
-		if [ "$nick" != '=!=' ] && [ "$nick" != '=' ] && [ "$(echo $msg | head -c 1)" == '!' ]; then
-			msg=$(echo $msg | sed -e "s/^!//")
-			set -- $msg
-			command=$1
-			shift
-			rest=$@
-			echo $nick wants me to $command and $@
-			
-			##User Commands
-			if [ "$command" == 'later' ]; then
-				set -- $rest
-				waitnick=$1
-				shift
-				message=$@
-				echo "Waiting to see $nick to send him $message" > "$ircdir/$server/$nick/in"
-				printf "$ircdir/$server/out" | while read -r date time nick msg; do
-					if [ "$nick" == "$waitnick" ]; then
-						echo "/privmsg $waitnick :$message" > "$ircdir/$server/in"
-					fi
-				done
-			fi
-		else
-			echo "Sorry, I don't recognize that command" > "$ircdir/$server/$nick/in"
-		fi
-
-done
-
-}
+#function servermessage() {
+#	touch "$ircdir/$server/out"
+#	printf "$ircdir/$server/out" | while read -r date time nick msg; do
+#		if [ "$(echo $nick | head -c 1)" == '<' ] && [ "$(echo $msg | head -c 1)" == '!' ]; then
+#			msg=$(echo $msg | sed -e "s/^!//")
+#			set -- $msg
+#			command=$1
+#			shift
+#			rest=$@
+#			echo $nick wants me to $command and $@
+#			
+#			##User Commands
+#			if [ "$command" == 'later' ]; then
+#				set -- $rest
+#				waitnick=$1
+#				shift
+#				message=$@
+#				nick=$(echo $nick | sed -e "s/^<//" -e "/>$//")
+#				echo "Waiting to see $waitnick to send him $message" > "$ircdir/$server/$nick/in"
+#				printf "$ircdir/$server/out" | while read -r date time nick msg; do
+#					nick=$(echo $nick | sed -e "s/^<//" -e "/>$//")
+#					if [ "$nick" == "$waitnick" ]; then
+#						echo "/privmsg $waitnick :$message" > "$ircdir/$server/in"
+#					fi
+#				done &
+#			fi
+#		else
+#			echo "Sorry, I don't recognize that command" > "$ircdir/$server/$nick/in"
+#		fi
+#
+#done &
+#
+#}
 
 
 
@@ -136,6 +138,7 @@ while true; do
 		commandme &
 	done
 	echo "/privmsg $owner :I AM READY" > $ircdir/$server/in
+#	servermessage
 	ownermessage
 	wait "$iipid"
 done 
