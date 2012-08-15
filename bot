@@ -51,6 +51,10 @@ function ownermessage(){
 			echo "$msg"
 			msgowner Parting $channel
 			echo "/part $channel" > "$ircdir$server/in"
+		elif [ "$i" == 'quit' ] || [ "$i" == 'Quit' ]; then
+			echo "quit"
+			msgowner Shutting Down
+			control_c
 		fi
 	done & 
 }
