@@ -4,13 +4,14 @@ owner=$2
 server=$3
 iidir=$4
 function commandme(){
-	touch "$ircdir/$server/$channel/out"
-	tailf -n1 "$ircdir/$server/$channel/out" | while read -r date time nick msg; do 
-	echo $nick $msg
-	if [ "$(echo $msg | head -c 1)" == '!' ]; then
-		$iidir/commandme $msg > "$ircdir/$server/$channel/in"
-	fi
-done
+	$iidir/commandme $channel > "$ircdir/$server/$channel/in"
+#	touch "$ircdir/$server/$channel/out"
+#	tailf -n1 "$ircdir/$server/$channel/out" | while read -r date time nick msg; do 
+#	echo $nick $msg
+#	if [ "$(echo $msg | head -c 1)" == '!' ]; then
+#		$iidir/commandme $msg > "$ircdir/$server/$channel/in"
+#	fi
+#done
 }
 tailf -n1 "$ircdir/$server/$owner/out" | while read -r date time nick msg; do
 	set -- $msg

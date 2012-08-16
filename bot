@@ -5,6 +5,9 @@ server="irc.freenode.net"
 channel="#swisstest"
 ircdir="/home/swiss/testing"
 iidir="/home/swiss/iibot"
+
+
+
 function msgowner() {
 echo "/privmsg $owner :$@" > "$ircdir/$server/in"
 }
@@ -23,11 +26,13 @@ function control_c() {
 
 #command grabbing
 function commandme(){
-	touch "$ircdir/$server/$channel/out"
-	tailf -n1 "$ircdir/$server/$channel/out" | while read -r date time nick msg; do 
-	echo $nick $msg
-	if [ "$(echo $msg | head -c 1)" == '!' ]; then
-		$iidir/commandme $msg > "$ircdir/$server/$channel/in"
+	echo "$iidir/commandme $channel  > "$ircdir/$server/$channel/in"" 
+	$iidir/commandme $channel  > "$ircdir/$server/$channel/in"
+#	touch "$ircdir/$server/$channel/out"
+#	tailf -n1 "$ircdir/$server/$channel/out" | while read -r date time nick msg; do 
+#	echo $nick $msg
+#	if [ "$(echo $msg | head -c 1)" == '!' ]; then
+#		$iidir/commandme $owner $nick $msg > "$ircdir/$server/$channel/in"
 ## Seperating the command from the program
 #		set -- $msg
 #		start=$1
@@ -60,10 +65,8 @@ function commandme(){
 #			fi
 #
 #		fi
-			
-
-	fi
-	done
+#	fi
+#	done
 }
 
 function ownermessage(){
@@ -162,7 +165,6 @@ while [ $run == true ]; do
 		touch $ircdir/$server/$channel/out
 		echo "/j $i" > $ircdir/$server/in
 		commandme &
-		echo -e "$!" > "pid$channel"
 	done
 	echo "/privmsg $owner :I AM READY" > $ircdir/$server/in
 #	servermessage

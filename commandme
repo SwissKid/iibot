@@ -1,35 +1,74 @@
 #!/bin/bash
-msg=$@
-start=$1
-shift
-rest=$@
-command=$(echo $start | sed -e "s/^!//")
+channel=$@
+owner="swiss"
+nick="swissboxbot"
+server="irc.freenode.net"
+ircdir="/home/swiss/testing"
+iidir="/home/swiss/iibot"
+touch "$ircdir/$server/$channel/out"
 
-##Time to start writing what commands do
-if [ "$command" == 'search' ] || [ "$command" == 'Search' ]; then
-	./anime $rest > "results.txt"
-	cat results.txt
+tailf -n1 "$ircdir/$server/$channel/out" |\
+ while read -r date time nick msg; do
+	set -- $msg
+	start=$1
+	shift
+	rest=$@
+	command=$(echo $start | sed -e "s/^!//")
+	truenick=$(echo $nick | sed -e "s/^<//" -e "s/>$//")
 
-##Time to check space left
-elif [ "$command" == 'space' ] || [ "$command" == 'Space' ]; then
-	
-##Fixing the fact that it's named unintuitively
-	if [ "$rest" == 'hdd1' ]; then
-		rest="/dev/sdb4"
-	fi
-	
+	if [ "$(echo $msg | head -c 1)" == '!' ]; then
+	##Time to start writing what commands do
+	if [ "$command" == 'search' ] || [ "$command" == 'Search' ]; then
+		./anime $rest > "results.txt"
+		cat results.txt
 
-	if df -h | grep $rest; then 
-		set -- $(df -h | grep $rest)
-		filesystem=$1
-		size=$2
-		availible=$4
-		used=$5
-		mount=$6
-		echo "On $mount there is $availible availible of $size. $used of this drive is full."
-	else
-		echo "Seems this device cannot be found."
-	fi
+	##Time to check space left
+	elif [ "$command" == 'space' ] || [ "$command" == 'Space' ]; then
+		
+	##Fixing the fact that it's named unintuitively
+		if [ "$rest" == 'hdd1' ]; then
+			rest="/dev/sdb4"
+		fi
 		
 
-fi
+		if df -h | grep $rest; then 
+			set -- $(df -h | grep $rest)
+			filesystem=$1
+			size=$2
+			availible=$4
+			used=$5
+			mount=$6
+			echo "On $mount there is $availible availible of $size. $used of this drive is full."
+		else
+			echo "Seems this device cannot be found."
+		fi
+
+
+	##Time to start having fun
+	elif [ "$command" == 'say' ] || [ "$command" == 'Say' ]; then
+		if [ "$truenick" == "$owner" ]; then
+			echo "$rest"
+		else
+			response=$[ ($RANDOM % 6 ) + 1 ]
+			if [ "$response" == 1 ]; then
+				echo "My master told me not to talk to strangers!"
+			elif [ "$response" == 2 ]; then 
+				echo "I don't do *anything* for free."
+			elif [ "$response" == 3 ]; then
+				echo 'How about !Say GO EAT A DICK'	
+			elif [ "$response" == 4 ]; then
+				echo "Is that how you speak to your mother?"
+			elif [ "$response" == 4 ]; then
+				echo "I'd so it for some people, but no way would I do it for you $truenick"
+			elif [ "$response" == 5 ]; then
+				answer=$(echo $msg | rev)
+				echo "$answer"
+			elif [ "$response" == 6 ]; then
+				echo "If only I had ops....."
+			else
+				echo "Fuck you."
+			fi
+		fi
+	fi
+	fi
+done
