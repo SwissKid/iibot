@@ -1,6 +1,6 @@
 #!/bin/bash
 source ./configuration
-./functions
+. functions
 msg=$@
 function commandme(){
 	$iidir/commandme $channel > "$ircdir/$server/$channel/in"
@@ -29,16 +29,11 @@ fi
 
 #Join
 if [ "$i" == 'j' ] || [ "$i" == 'join' ]; then
-	if [ ! -d "$ircdir/$server/$channel/" ]; then
 		echo "/j $channel"
 		echo "/j $channel" > "$ircdir/$server/in"
-		echo "/privmsg $owner :Joining $channel" > "$ircdir/$server/in"
 		commandme &
-	else
-		echo "/j $channel"
-		echo "/j $channel" > "$ircdir/$server/in"
+		echo "true" > "in$channel"
 		echo "/privmsg $owner :Joining $channel" > "$ircdir/$server/in"
-	fi	
 #Speak
 elif [ "$i" == 'say' ] || [ "$i" == 'Say' ]; then
 	echo "/privmsg $channel :$message"
@@ -49,6 +44,8 @@ elif [ "$i" == 'q' ] || [ "$i" == 'part' ] || [ "$i" == 'p' ]; then
 	echo "$msg"
 	msgowner Parting $channel with message $message
 	echo "/part $channel :$message" > "$ircdir/$server/in"
+	echo "false" > "in$channel"
+	
 
 #	#Quit  -- not yet functional
 #	elif [ "$i" == 'quit' ] || [ "$i" == 'Quit' ]; then

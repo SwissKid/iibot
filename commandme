@@ -6,7 +6,7 @@ server="irc.freenode.net"
 ircdir="/home/swiss/testing"
 iidir="/home/swiss/iibot"
 touch "$ircdir/$server/$channel/out"
-
+joined=true
 tailf -n1 "$ircdir/$server/$channel/out" |\
  while read -r date time nick msg; do
 	set -- $msg
@@ -16,7 +16,10 @@ tailf -n1 "$ircdir/$server/$channel/out" |\
 	command=$(echo $start | sed -e "s/^!//")
 	truenick=$(echo $nick | sed -e "s/^<//" -e "s/>$//")
 
-
+joined=$(tail -n1 in$channel)
+if [ "$joined" == "false" ]; then
+	exit 0
+fi
 ##Name recognition thing ain't workin
 #	if [ "$(echo $msg | head -c 12)" == 'swissboxbot:' ]; then
 #		text=$(echo $msg | sed -e "s/swissboxbox: //")
