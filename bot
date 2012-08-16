@@ -1,16 +1,13 @@
 #!/bin/bash
-owner="swiss"
-nick="swissboxbot"
-server="irc.freenode.net"
-channel="#swisstest"
-ircdir="/home/swiss/testing"
-iidir="/home/swiss/iibot"
-
+source ./configuration
 
 
 function msgowner() {
 echo "/privmsg $owner :$@" > "$ircdir/$server/in"
 }
+
+
+
 run=true
 trap control_c SIGINT
 #ctrl-c inttrupt
@@ -70,8 +67,8 @@ function commandme(){
 }
 
 function ownermessage(){
-	$iidir/ownercommand $ircdir $owner $server $iidir
-#	tailf -n1 "$ircdir/$server/$owner/out" | while read -r date time nick msg; do
+	tailf -n1 "$ircdir/$server/$owner/out" | while read -r date time nick msg; do
+		$iidir/ownercommand $msg
 #		set -- $msg
 #		i=$1
 #		shift
@@ -117,7 +114,7 @@ function ownermessage(){
 #			control_c
 #		fi
 #
-#	done & 
+	done & 
 }
 
 #function servermessage() {
@@ -160,11 +157,12 @@ while [ $run == true ]; do
 	$iidir/ii -s $server -n $nick -f "Iamabot" -i $ircdir &
 	iipid="$!"
 	sleep 3
-	for i in $channel; do
-		mkdir $ircdir/$server/$channel/
-		touch $ircdir/$server/$channel/out
+	for i in $initchannel; do
+		channel=$i
+		mkdir $ircdir/$server/$i/
+		touch $ircdir/$server/$i/out
 		echo "/j $i" > $ircdir/$server/in
-		commandme &
+		commandme $i &
 	done
 	echo "/privmsg $owner :I AM READY" > $ircdir/$server/in
 #	servermessage
