@@ -2,10 +2,10 @@
 set -- $@
 truenick=$1
 shift
-command=$1
+commandold=$1
 shift
 rest=$@
-
+command=$(echo $commandold | tr [:upper:] [:lower:])
 ##main search
 if [ "$command" == 'search' ] || [ "$command" == 'Search' ]; then
 		./scripts/search $rest > "results.txt"
@@ -19,4 +19,6 @@ elif [ "$command" == 'say' ] || [ "$command" == 'Say' ]; then
 ##Lets check release groups!
 elif [ "$command" == 'show' ] || [ "$command" == 'Show' ]; then
 	./scripts/show $rest
+elif [ "$command" == 'google' ]; then
+	./scripts/google $rest
 fi

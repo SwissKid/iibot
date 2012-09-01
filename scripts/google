@@ -1,0 +1,4 @@
+#!/bin/bash
+rest=$@
+result=$(curl -s --get --data-urlencode "q=$rest" http://ajax.googleapis.com/ajax/services/search/web?v=1.0 | sed 's/"unescapedUrl":"\([^"]*\).*/\1/;s/.*GwebSearch",//')
+echo "The first result of your search is: $result"
