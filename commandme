@@ -29,66 +29,7 @@ fi
 #	fi
 
 	if [ "$(echo $msg | head -c 1)" == '!' ]; then
-	##Time to start writing what commands do
-	if [ "$command" == 'search' ] || [ "$command" == 'Search' ]; then
-		./anime $rest > "results.txt"
-		cat results.txt
-
-	##Time to check space left
-	elif [ "$command" == 'space' ] || [ "$command" == 'Space' ]; then
-		
-	##Fixing the fact that it's named unintuitively
-		if [ "$rest" == 'hdd1' ]; then
-			rest="/dev/sdb4"
-		fi
-		
-
-		if df -h | grep $rest; then 
-			set -- $(df -h | grep $rest)
-			filesystem=$1
-			size=$2
-			availible=$4
-			used=$5
-			mount=$6
-			echo "On $mount there is $availible availible of $size. $used of this drive is full."
-		else
-			echo "Seems this device cannot be found."
-		fi
-
-
-	##Time to start having fun
-	elif [ "$command" == 'say' ] || [ "$command" == 'Say' ]; then
-		if [ "$truenick" == "$owner" ]; then
-			echo "$rest"
-		else
-			response=$[ ($RANDOM % 6 ) + 1 ]
-			if [ "$response" == 1 ]; then
-				echo "My master told me not to talk to strangers!"
-			elif [ "$response" == 2 ]; then 
-				echo "I don't do *anything* for free."
-			elif [ "$response" == 3 ]; then
-				echo 'How about !Say GO EAT A DICK'	
-			elif [ "$response" == 4 ]; then
-				echo "Is that how you speak to your mother?"
-			elif [ "$response" == 4 ]; then
-				echo "I'd so it for some people, but no way would I do it for you $truenick"
-			elif [ "$response" == 5 ]; then
-				answer=$(echo $msg | rev)
-				echo "$answer"
-			elif [ "$response" == 6 ]; then
-				echo "If only I had ops....."
-			else
-				echo "Fuck you."
-			fi
-		fi
-	##Lets check release groups!
-	elif [ "$command" == 'show' ] || [ "$command" == 'Show' ]; then
-		echo "searching"
-		if [ -d "/home/sftp/mount/hdd2/anime/$rest" ]; then
-			echo "$(ls "/home/sftp/mount/hdd2/anime/$rest")"
-		else
-			echo "Whoops, I couldn't find $rest"
-		fi	
-	fi
+	##Send the commands to the scripts!
+		./scripts/command $command $rest
 	fi
 done

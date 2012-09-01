@@ -1,6 +1,6 @@
 #!/bin/bash
 source ./configuration
-rm -r "$ircdir/*"
+rm -r "$ircdir/$server/"
 mkdir -p "$ircdir/$server/$owner/"
 touch "$ircdir/$server/$owner/out"
 

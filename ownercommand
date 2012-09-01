@@ -31,9 +31,9 @@ fi
 if [ "$i" == 'j' ] || [ "$i" == 'join' ]; then
 		echo "/j $channel"
 		echo "/j $channel" > "$ircdir/$server/in"
+		echo "true" > "in$channel"
 		sleep 1
 		commandme &
-		echo "true" > "in$channel"
 		echo "/privmsg $owner :Joining $channel" > "$ircdir/$server/in"
 #Speak
 elif [ "$i" == 'say' ] || [ "$i" == 'Say' ]; then
