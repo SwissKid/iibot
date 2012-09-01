@@ -1,0 +1,6 @@
+export owner="swiss"
+export nick="swissboxbot"
+export server="irc.freenode.net"
+export initchannel="#swisstest"
+export ircdir="/home/swiss/testing"
+export iidir="/home/swiss/iibot"

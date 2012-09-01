@@ -1,0 +1,4 @@
+#!/bin/bash
+function msgowner() {
+echo "/privmsg $owner :$@" > "$ircdir/$server/in"
+}
