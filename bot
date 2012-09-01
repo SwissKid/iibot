@@ -1,6 +1,8 @@
 #!/bin/bash
 source ./configuration
-
+rm -r "$ircdir/*"
+mkdir -p "$ircdir/$server/$owner/"
+touch "$ircdir/$server/$owner/out"
 
 function msgowner() {
 echo "/privmsg $owner :$@" > "$ircdir/$server/in"

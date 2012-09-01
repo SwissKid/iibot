@@ -1,9 +1,11 @@
 #!/bin/bash
-filesgrep=$(ls /home/sftp/files/anime/ | grep -i $1)
+#filesgrep=$(ls /home/sftp/files/anime/ | grep -i $1)
 hdd2grep=$(ls /home/sftp/mount/hdd2/anime/ | grep -i $1)
-hotswapgrep=$(ls /home/sftp/mount/hotswap/anime/ | grep -i $1)
-linenumber=$(echo -e "$filesgrep $hdd2grep $hotswapgrep" | wc -l)
-if [ "$hdd2grep" == '' ] && [ "$filesgrep" == '' ] && [ "$hotswapgrep" == '' ]; then
+#hotswapgrep=$(ls /home/sftp/mount/hotswap/anime/ | grep -i $1)
+
+##Removed filesgrep and hotswap as I have migrated to the 3tb drive
+linenumber=$(echo -e "$hdd2grep" | wc -l)
+if [ "$hdd2grep" == '' ]; then
 	echo "No files found"
 	exit 0
 else
@@ -17,7 +19,7 @@ if [ $linenumber != 1 ]; then
 		echo -n "The found files are: "
 		while [ $n -le $linenumber ]
 		do
-			line=$(echo "$filesgrep $hdd2grep $hotswapgrep" | sed -n "$n"p)
+			line=$(echo "$hdd2grep" | sed -n "$n"p)
 			if [ "$n" -lt "$linenumber" ];
 			 then
 				echo -n "$line, ";
@@ -33,6 +35,6 @@ else
 	echo "There was one file found."
 	n=1
 	echo -n "The found file was: "
-	line=$(echo "$filesgrep $hdd2grep" | sed -n "$n"p)
+	line=$(echo "$hdd2grep" | sed -n "$n"p)
 	echo "$line."	
 fi

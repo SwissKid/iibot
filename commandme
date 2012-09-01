@@ -81,6 +81,14 @@ fi
 				echo "Fuck you."
 			fi
 		fi
+	##Lets check release groups!
+	elif [ "$command" == 'show' ] || [ "$command" == 'Show' ]; then
+		echo "searching"
+		if [ -d "/home/sftp/mount/hdd2/anime/$rest" ]; then
+			echo "$(ls "/home/sftp/mount/hdd2/anime/$rest")"
+		else
+			echo "Whoops, I couldn't find $rest"
+		fi	
 	fi
 	fi
 done
