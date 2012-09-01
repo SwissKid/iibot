@@ -20,6 +20,11 @@ joined=$(tail -n1 in$channel)
 if [ "$joined" == "false" ]; then
 	exit 0
 fi
+if [[ "$msg" == swissboxbot:* ]]; then
+	./scripts/saymyname $truenick $msg
+fi
+
+
 ##Name recognition thing ain't workin
 #	if [ "$(echo $msg | head -c 12)" == 'swissboxbot:' ]; then
 #		text=$(echo $msg | sed -e "s/swissboxbox: //")

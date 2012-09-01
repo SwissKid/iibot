@@ -1,0 +1,25 @@
+#!/bin/bash
+./configuration
+msg=$@
+set -- $msg
+truenick=$1
+shift
+name=$1
+shift
+rest=$@
+words=$(echo $rest | tr [:upper:] [:lower:])
+if [ "$truenick" == "$owner" ]; then
+	if [[ "$words" == fuck\ you* ]]; then
+		echo "I-i-is that really how you feel?!?! Please don't leave me!"
+	elif [[ "$words" == i\ love\ you* ]]; then
+		echo "Take me away my master!"
+	fi
+else
+	if [ "$words" == "hello" ]; then
+		echo "hi!"
+	elif [[ "$words" == fuck\ you* ]]; then
+		echo "Well, FUCK YOU TOO!"
+	elif [[ "$words" == i\ love\ you ]]; then
+		echo "I'm sorry, but I'm saving myself for $owner"
+	fi
+fi

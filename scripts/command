@@ -10,12 +10,10 @@ rest=$@
 if [ "$command" == 'search' ] || [ "$command" == 'Search' ]; then
 		./scripts/search $rest > "results.txt"
 		cat results.txt
-
 ##Time to check space left
 elif [ "$command" == 'space' ] || [ "$command" == 'Space' ]; then
 	./scripts/space $rest
-
-	##Time to start having fun
+##Time to start having fun
 elif [ "$command" == 'say' ] || [ "$command" == 'Say' ]; then
 	./scripts/say $truenick $rest
 ##Lets check release groups!
