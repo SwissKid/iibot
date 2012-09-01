@@ -1,0 +1,31 @@
+#!/bin/bash
+./configuration
+set -- $@
+truenick=$1
+shift
+rest=$@
+
+
+if [ "$truenick" == "$owner" ]; then
+	echo "$rest"
+else
+	response=$[ ($RANDOM % 6 ) + 1 ]
+	if [ "$response" == 1 ]; then
+		echo "My master told me not to talk to strangers!"
+	elif [ "$response" == 2 ]; then 
+		echo "I don't do *anything* for free."
+	elif [ "$response" == 3 ]; then
+		echo 'How about !Say GO EAT A DICK'	
+	elif [ "$response" == 4 ]; then
+		echo "Is that how you speak to your mother?"
+	elif [ "$response" == 4 ]; then
+		echo "I'd so it for some people, but no way would I do it for you $truenick"
+	elif [ "$response" == 5 ]; then
+		answer=$(echo $msg | rev)
+		echo "$answer"
+	elif [ "$response" == 6 ]; then
+		echo "If only I had ops....."
+	else
+		echo "Fuck you."
+	fi
+fi

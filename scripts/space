@@ -1,0 +1,18 @@
+#!/bin/bash
+rest=$@	
+##Fixing the fact that it's named unintuitively
+if [ "$rest" == 'hdd1' ]; then
+		rest="/dev/sdb4"
+fi
+	
+if df -h | grep $rest; then 
+	set -- $(df -h | grep $rest)
+	filesystem=$1
+	size=$2
+	availible=$4
+	used=$5
+	mount=$6
+	echo "On $mount there is $availible availible of $size. $used of this drive is full."
+else
+	echo "Seems this device cannot be found."
+fi
