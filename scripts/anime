@@ -8,8 +8,6 @@ linenumber=$(echo -e "$hdd2grep" | wc -l)
 if [ "$hdd2grep" == '' ]; then
 	echo "No files found"
 	exit 0
-else
-	continue
 fi
 
 if [ $linenumber != 1 ]; then

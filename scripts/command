@@ -6,7 +6,7 @@ rest=$@
 
 ##main search
 if [ "$command" == 'search' ] || [ "$command" == 'Search' ]; then
-		./anime $rest > "results.txt"
+		./scripts/anime $rest > "results.txt"
 		cat results.txt
 
 ##Time to check space left
