@@ -9,6 +9,7 @@ rest=$@
 if [ "$truenick" == "$owner" ]; then
 	echo "$rest"
 else
+	echo "$truenick"
 	response=$[ ($RANDOM % 6 ) + 1 ]
 	if [ "$response" == 1 ]; then
 		echo "My master told me not to talk to strangers!"

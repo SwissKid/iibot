@@ -30,6 +30,6 @@ fi
 
 	if [ "$(echo $msg | head -c 1)" == '!' ]; then
 	##Send the commands to the scripts!
-		./scripts/command $command $rest
+		./scripts/command $truenick $command $rest
 	fi
 done

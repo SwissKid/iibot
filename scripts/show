@@ -1,0 +1,12 @@
+#!/bin/bash
+rest=$@
+if [[ "$rest" == */* ]] ; then
+	echo "Why don't you try and exploit someone else?"
+else
+	if [ -d "/home/sftp/mount/hdd2/anime/$rest" ]; then
+		echo -e "The files in $rest are:"
+		echo "$(ls "/home/sftp/mount/hdd2/anime/$rest")"
+	else
+		echo "Whoops, I couldn't find $rest"
+	fi
+fi	

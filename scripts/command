@@ -1,49 +1,24 @@
 #!/bin/bash
 set -- $@
+truenick=$1
+shift
 command=$1
 shift
 rest=$@
 
 ##main search
 if [ "$command" == 'search' ] || [ "$command" == 'Search' ]; then
-		./scripts/anime $rest > "results.txt"
+		./scripts/search $rest > "results.txt"
 		cat results.txt
 
 ##Time to check space left
 elif [ "$command" == 'space' ] || [ "$command" == 'Space' ]; then
-	./scripts/space
+	./scripts/space $rest
 
 	##Time to start having fun
 elif [ "$command" == 'say' ] || [ "$command" == 'Say' ]; then
-	./scripts/say
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	./scripts/say $truenick $rest
 ##Lets check release groups!
 elif [ "$command" == 'show' ] || [ "$command" == 'Show' ]; then
-	echo "searching"
-	if [ -d "/home/sftp/mount/hdd2/anime/$rest" ]; then
-		echo "$(ls "/home/sftp/mount/hdd2/anime/$rest")"
-	else
-		echo "Whoops, I couldn't find $rest"
-	fi	
+	./scripts/show $rest
 fi
