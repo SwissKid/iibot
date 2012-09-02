@@ -1,0 +1,24 @@
+#!/bin/bash
+rest=$@
+if [[ "$rest" == */* ]] ; then
+	echo "Why don't you try and exploit someone else?"
+	exit 0
+fi
+set -- $rest
+if [ "$(echo $1 | tr [:upper:] [:lower:])" == 'ecchi' ]; then
+	set -- $rest
+	shift
+	manga=$@	
+	if [ -d "/home/sftp/mount/hdd2/manga/Ecchi/$manga" ]; then
+		echo "The latest chapter we have is: $(ls "/home/sftp/mount/hdd2/manga/Ecchi/$manga" | tail -n 1)"
+	else
+		echo "Whoops, I couldn't find $manga in Ecchi. Why don't you try a standard search?"
+	fi
+	
+else
+	if [ -d "/home/sftp/mount/hdd2/manga/$rest" ]; then
+		echo "The latest chapter we have is: $(ls "/home/sftp/mount/hdd2/manga/$rest" | tail -n 1)"
+	else
+		echo "Whoops, I couldn't find $rest"
+	fi
+fi	

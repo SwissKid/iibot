@@ -8,7 +8,7 @@ commandold=$1
 entire=$@
 shift
 rest=$@
-allowed=$(cat ./allow$channel)
+allowed=$(cat "./allow/$channel")
 command=$(echo $commandold | tr [:upper:] [:lower:])
 
 
@@ -29,6 +29,9 @@ elif [ "$command" == 'manga' ] ; then
 	allowcheck swissbox
 	./scripts/manga $rest > "results.txt"
 	cat results.txt
+elif [ "$command" == 'lastchap' ] ; then
+	allowcheck swissbox
+	./scripts/lastchap $rest
 ##Time to check space left
 elif [ "$command" == 'space' ]; then 
 	allowcheck swissbox

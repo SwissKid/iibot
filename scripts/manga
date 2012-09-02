@@ -1,6 +1,14 @@
 #!/bin/bash
-hdd2grep=$(ls /home/sftp/mount/hdd2/manga/ | grep -i $1)
-
+if [ "$(echo $1| tr [:upper:] [:lower:])" == 'ecchi' ]; then
+	set -- $@
+	shift
+	manga=$@
+	hdd2grep=$(ls /home/sftp/mount/hdd2/manga/Ecchi/ | grep -i "$manga")
+	echo "Searching Ecchi...."
+else
+	manga=$@
+	hdd2grep=$(ls /home/sftp/mount/hdd2/manga/ | grep -i "$manga")
+fi
 ##Removed filesgrep and hotswap as I have migrated to the 3tb drive
 linenumber=$(echo -e "$hdd2grep" | wc -l)
 if [ "$hdd2grep" == '' ]; then
@@ -28,9 +36,8 @@ if [ $linenumber != 1 ]; then
 		echo "That's way too many to display nicely. Please refine your search terms."
 	fi
 else
-	echo "There was one file found."
 	n=1
-	echo -n "The found file was: "
+	echo -n "The only result is: "
 	line=$(echo "$hdd2grep" | sed -n "$n"p)
 	echo "$line."	
 fi
