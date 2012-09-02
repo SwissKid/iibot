@@ -10,13 +10,17 @@ shift
 rest=$@
 allowed=$(cat ./allow$channel)
 command=$(echo $commandold | tr [:upper:] [:lower:])
-##main search
+
+
 function allowcheck() {
 if [[ "$allowed" != *$@* ]]; then
 	echo "This functionality is disabled on $channel"
 	exit 0
 fi
 }
+
+
+##main search ( swissbox
 if [ "$command" == 'search' ]; then 
 	allowcheck swissbox
 	./scripts/search $rest > "results.txt"
@@ -29,19 +33,22 @@ elif [ "$command" == 'manga' ] ; then
 elif [ "$command" == 'space' ]; then 
 	allowcheck swissbox
 	./scripts/space $rest
+##Lets check release groups!
 elif [ "$command" == 'show' ]; then 
 	allowcheck swissbox
 	./scripts/show $rest
 ##Time to start having fun
 elif [ "$command" == 'say' ] || [ "$command" == 'Say' ]; then
 	./scripts/say $truenick $rest
-##Lets check release groups!
+
+##googling. Incredibly annoying, disabled by default.
 elif [ "$command" == 'google' ]; then
 	allowcheck google
 	./scripts/google $truenick $rest
 elif [ "$command" == 'bannedwords' ]; then
 	./scripts/banword $truenick $rest
+
+#need to allow swissbox and googling when needed
 elif [ "$command" == 'allow' ] || [ "$command" == 'deny' ] ; then
 	./scripts/allow $channel $truenick $command $rest
-
-if
+fi

@@ -11,7 +11,7 @@ shift
 rest=$@
 words=$(echo $rest | tr [:upper:] [:lower:])
 if [ "$(echo $words | head -c 1)" == '!' ]; then
-	command=$(echo $words | sed -e 's/^!//')
+	command=$(echo $rest | sed -e 's/^!//')
 	./scripts/command $channel $truenick $command
 else
 	if [[ "$rest" == *RAGE* ]] ; then
