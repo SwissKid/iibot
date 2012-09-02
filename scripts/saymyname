@@ -14,6 +14,9 @@ if [ "$(echo $words | head -c 1)" == '!' ]; then
 	command=$(echo $words | sed -e 's/^!//')
 	./scripts/command $channel $truenick $command
 else
+	if [[ "$rest" == *RAGE* ]] ; then
+		echo "RAAAAAAAAAAAAAAAAAAAAGE"
+	fi
 	if [ "$truenick" == "$owner" ]; then
 		if [[ "$words" == fuck\ you* ]]; then
 			echo "I-i-is that really how you feel?!?! Please don't leave me!"

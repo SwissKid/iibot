@@ -32,7 +32,6 @@ fi
 #			echo "You'd like to, wouldn't you?!"
 #		fi 
 #	fi
-
 #	if [ "$(echo $msg | head -c 1)" == '!' ]; then
 #	##Send the commands to the scripts!
 #		./scripts/command $truenick $command $rest

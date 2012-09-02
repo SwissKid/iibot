@@ -5,6 +5,7 @@ shift
 truenick=$1
 shift
 commandold=$1
+entire=$@
 shift
 rest=$@
 allowed=$(cat ./allow$channel)
@@ -42,4 +43,5 @@ elif [ "$command" == 'bannedwords' ]; then
 	./scripts/banword $truenick $rest
 elif [ "$command" == 'allow' ] || [ "$command" == 'deny' ] ; then
 	./scripts/allow $channel $truenick $command $rest
-fi
+
+if
