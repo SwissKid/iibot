@@ -1,29 +1,45 @@
 #!/bin/bash
 set -- $@
+channel=$1
+shift
 truenick=$1
 shift
 commandold=$1
 shift
 rest=$@
+allowed=$(cat ./allow$channel)
 command=$(echo $commandold | tr [:upper:] [:lower:])
 ##main search
-if [ "$command" == 'search' ] || [ "$command" == 'Search' ]; then
-		./scripts/search $rest > "results.txt"
-		cat results.txt
+function allowcheck() {
+if [[ "$allowed" != *$@* ]]; then
+	echo "This functionality is disabled on $channel"
+	exit 0
+fi
+}
+if [ "$command" == 'search' ]; then 
+	allowcheck swissbox
+	./scripts/search $rest > "results.txt"
+	cat results.txt
 elif [ "$command" == 'manga' ] ; then
-		./scripts/manga $rest > "results.txt"
-		cat results.txt
+	allowcheck swissbox
+	./scripts/manga $rest > "results.txt"
+	cat results.txt
 ##Time to check space left
-elif [ "$command" == 'space' ] || [ "$command" == 'Space' ]; then
+elif [ "$command" == 'space' ]; then 
+	allowcheck swissbox
 	./scripts/space $rest
+elif [ "$command" == 'show' ]; then 
+	allowcheck swissbox
+	./scripts/show $rest
 ##Time to start having fun
 elif [ "$command" == 'say' ] || [ "$command" == 'Say' ]; then
 	./scripts/say $truenick $rest
 ##Lets check release groups!
-elif [ "$command" == 'show' ] || [ "$command" == 'Show' ]; then
-	./scripts/show $rest
 elif [ "$command" == 'google' ]; then
+	allowcheck google
 	./scripts/google $truenick $rest
 elif [ "$command" == 'bannedwords' ]; then
 	./scripts/banword $truenick $rest
+elif [ "$command" == 'allow' ] || [ "$command" == 'deny' ] ; then
+	./scripts/allow $channel $truenick $command $rest
 fi

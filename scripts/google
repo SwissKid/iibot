@@ -4,7 +4,6 @@ set -- $@
 truenick=$1
 shift
 rest=$@
-if [ "$truenick" == "$owner" ]; then
 if [ "$(cat ./googletimeout)" == "true" ]; then
 	echo "Please wait before continuing with searches"
 	exit0
@@ -28,7 +27,4 @@ if [[ "$title" == *403}$ ]]; then
 	exit 0
 else
 	echo -e "The first result of your search is: \n 5,3 $title \n $webaddr" 
-fi
-else
-	echo "Fuck you $truenick!"
 fi

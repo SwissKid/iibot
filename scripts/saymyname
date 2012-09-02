@@ -2,6 +2,8 @@
 ./configuration
 msg=$@
 set -- $msg
+channel=$1
+shift
 truenick=$1
 shift
 name=$1
@@ -10,7 +12,7 @@ rest=$@
 words=$(echo $rest | tr [:upper:] [:lower:])
 if [ "$(echo $words | head -c 1)" == '!' ]; then
 	command=$(echo $words | sed -e 's/^!//')
-	./scripts/command $truenick $command
+	./scripts/command $channel $truenick $command
 else
 	if [ "$truenick" == "$owner" ]; then
 		if [[ "$words" == fuck\ you* ]]; then

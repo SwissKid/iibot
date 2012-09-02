@@ -21,7 +21,7 @@ if [ "$joined" == "false" ]; then
 	exit 0
 fi
 if [[ "$msg" == swissboxbot:* ]]; then
-	./scripts/saymyname $truenick $msg
+	./scripts/saymyname $channel $truenick $msg
 fi
 
 
