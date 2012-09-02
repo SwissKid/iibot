@@ -32,6 +32,10 @@ elif [ "$command" == 'manga' ] ; then
 elif [ "$command" == 'lastchap' ] ; then
 	allowcheck swissbox
 	./scripts/lastchap $rest
+##lets try a request system
+elif [ "$command" == 'request' ] ; then
+	allowcheck swissbox
+	./scripts/request $truenick $rest
 ##Time to check space left
 elif [ "$command" == 'space' ]; then 
 	allowcheck swissbox
