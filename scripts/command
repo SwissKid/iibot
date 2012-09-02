@@ -47,6 +47,8 @@ elif [ "$command" == 'show' ]; then
 ##Time to start having fun
 elif [ "$command" == 'say' ] || [ "$command" == 'Say' ]; then
 	./scripts/say $truenick $rest
+elif [ "$command" == 'time' ]; then
+	echo "The correct time is `date`"
 
 ##googling. Incredibly annoying, disabled by default.
 elif [ "$command" == 'google' ]; then

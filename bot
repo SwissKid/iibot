@@ -159,6 +159,8 @@ while [ $run == true ]; do
 	$iidir/ii -s $server -n $nick -f "Iamabot" -i $ircdir &
 	iipid="$!"
 	sleep 3
+	./register
+	##you'll have to put your own command to identify with nickserv here, you can't have my pass
 	for i in $initchannel; do
 		channel=$i
 		mkdir $ircdir/$server/$i/

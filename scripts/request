@@ -21,11 +21,11 @@ if [ "$type" != 'anime' ] && [ "$type" != 'manga' ]; then
 fi
 
 if [ "$command" == 'add' ]; then 
-	search=$(grep -i "$@" ./request/$type)
+	search=$(grep -i """$msg""" ./request/$type)
 	if [ "$search" != "" ] ; then
 		privmsg $truenick "Sorry, this item has already been requested!"
 	else
-		echo "$truenick:	$@" >> "./request/$type"
+		echo "$truenick:	$msg" >> "./request/$type"
 	fi
 elif [ "$command" == 'list' ]; then
 	cat "./request/$type" | while read line; do
