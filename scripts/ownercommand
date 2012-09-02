@@ -1,0 +1,11 @@
+#!/bin/bash
+set -- $@
+command=$1
+shift
+rest=$@
+. configuration
+. functions
+truecommand=$(echo $command | sed -e 's/^!//'| tr [:upper:] [:lower:] )
+if [ "$truecommand" == 'bannedwords' ] ; then
+	./scripts/banword $owner $@
+fi

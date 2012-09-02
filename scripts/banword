@@ -1,0 +1,30 @@
+#!/bin/bash
+set -- $@
+truenick=$1
+shift
+command=$1
+shift
+rest=$@
+./configuration
+function msgowner() {
+echo "/privmsg $owner :$@" > "$ircdir/$server/in"
+}
+
+
+if [ "$truenick" == "$owner" ]; then
+	if [ "$command" == "list" ]; then
+		cat ./bannedwords | while read line; do
+			msgowner $line;
+		done
+	elif [ "$command" == "add" ]; then
+		echo $rest >> ./bannedwords
+		msgowner Added $rest
+	elif [ "$command" == 'remove' ]; then
+		sed -ie "s/$rest//g" ./bannedwords
+		msgowner removed $rest
+	else
+		msgowner "The only commands I know are add remove and list!"
+	fi		
+else
+	echo "You don't get to do that $truenick!"
+fi

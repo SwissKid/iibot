@@ -21,4 +21,6 @@ elif [ "$command" == 'show' ] || [ "$command" == 'Show' ]; then
 	./scripts/show $rest
 elif [ "$command" == 'google' ]; then
 	./scripts/google $rest
+elif [ "$command" == 'bannedwords' ]; then
+	./scripts/banword $truenick $rest
 fi

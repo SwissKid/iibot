@@ -18,40 +18,44 @@ shift
 channel=$1
 shift
 message=$@
-echo "Master wants me to $i $channel and $message"
-if [ "$(echo $channel | head -c 1)" != "#" ]; then
-	echo $channel
-	newchannel=$(echo "#""$channel")
-	channel="$newchannel"
-	echo $newchannel
+if [ "$(echo $i | head -c 1)" == '!' ]; then
+	msgowner `./scripts/ownercommand $msg`
+else
+	echo "Master wants me to $i $channel and $message"
+	if [ "$(echo $channel | head -c 1)" != "#" ]; then
+		echo $channel
+		newchannel=$(echo "#""$channel")
+		channel="$newchannel"
+		echo $newchannel
+	fi
+
+
+
+	#Join
+	if [ "$i" == 'j' ] || [ "$i" == 'join' ]; then
+			echo "/j $channel"
+			echo "/j $channel" > "$ircdir/$server/in"
+			echo "true" > "in$channel"
+			sleep 1
+			commandme &
+			echo "/privmsg $owner :Joining $channel" > "$ircdir/$server/in"
+	#Speak
+	elif [ "$i" == 'say' ] || [ "$i" == 'Say' ]; then
+		echo "/privmsg $channel :$message"
+		echo "/privmsg $channel :$message" > "$ircdir/$server/in"
+
+	#Part
+	elif [ "$i" == 'q' ] || [ "$i" == 'part' ] || [ "$i" == 'p' ]; then
+		echo "$msg"
+		msgowner Parting $channel with message $message
+		echo "/part $channel :$message" > "$ircdir/$server/in"
+		echo "false" > "in$channel"
+		
+
+	#	#Quit  -- not yet functional
+	#	elif [ "$i" == 'quit' ] || [ "$i" == 'Quit' ]; then
+	#		echo "quit"
+	#		msgowner Shutting Down
+	#		control_c
+	fi
 fi
-
-
-#Join
-if [ "$i" == 'j' ] || [ "$i" == 'join' ]; then
-		echo "/j $channel"
-		echo "/j $channel" > "$ircdir/$server/in"
-		echo "true" > "in$channel"
-		sleep 1
-		commandme &
-		echo "/privmsg $owner :Joining $channel" > "$ircdir/$server/in"
-#Speak
-elif [ "$i" == 'say' ] || [ "$i" == 'Say' ]; then
-	echo "/privmsg $channel :$message"
-	echo "/privmsg $channel :$message" > "$ircdir/$server/in"
-
-#Part
-elif [ "$i" == 'q' ] || [ "$i" == 'part' ] || [ "$i" == 'p' ]; then
-	echo "$msg"
-	msgowner Parting $channel with message $message
-	echo "/part $channel :$message" > "$ircdir/$server/in"
-	echo "false" > "in$channel"
-	
-
-#	#Quit  -- not yet functional
-#	elif [ "$i" == 'quit' ] || [ "$i" == 'Quit' ]; then
-#		echo "quit"
-#		msgowner Shutting Down
-#		control_c
-fi
-
