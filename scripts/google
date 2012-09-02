@@ -1,7 +1,10 @@
 #!/bin/bash
 ./configuration
 rest=$@
-runend="false"
+if [ "$rest" == "" ]; then
+	echo "Please enter a term to search"
+	exit 0
+fi
 for i in `cat ./bannedwords`; do
 if [[ "$rest" == *$i* ]]; then
 	echo "No thanks, I don't think $owner likes the FBI"
