@@ -33,8 +33,8 @@ fi
 #		fi 
 #	fi
 
-	if [ "$(echo $msg | head -c 1)" == '!' ]; then
-	##Send the commands to the scripts!
-		./scripts/command $truenick $command $rest
-	fi
+#	if [ "$(echo $msg | head -c 1)" == '!' ]; then
+#	##Send the commands to the scripts!
+#		./scripts/command $truenick $command $rest
+#	fi
 done
