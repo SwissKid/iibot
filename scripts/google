@@ -1,6 +1,11 @@
 #!/bin/bash
+./configuration
 rest=$@
-curl -s --get --data-urlencode "q=$rest" http://ajax.googleapis.com/ajax/services/search/web?v=1.0 > googleresults
-webaddr=$(sed 's/"unescapedUrl":"\([^"]*\).*/\1/;s/.*GwebSearch",//' < googleresults)
-title=$( sed -e 's/"titleNoFormatting":"\([^"]*\).*/\1/;s/.*",//' < googleresults)
-echo -e "The first result of your search is: \n 5,3 $title \n $webaddr" 
+if [[ "$rest" == *bomb* ]] || [[ "$rest" == *anarch* ]] || [[ "$rest" == *fbi* ]] || [[ "$rest" == *\ rape* ]]; then
+	echo "No thanks, I don't think $owner likes the FBI"
+else
+	curl -s --get --data-urlencode "q=$rest" http://ajax.googleapis.com/ajax/services/search/web?v=1.0 > googleresults
+	webaddr=$(sed 's/"unescapedUrl":"\([^"]*\).*/\1/;s/.*GwebSearch",//' < googleresults)
+	title=$( sed -e 's/"titleNoFormatting":"\([^"]*\).*/\1/;s/.*",//' < googleresults)
+	echo -e "The first result of your search is: \n 5,3 $title \n $webaddr" 
+fi
