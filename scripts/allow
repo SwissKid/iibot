@@ -11,11 +11,11 @@ rest=$@
 . functions
 if [ "$truenick" == "$owner" ]; then
 	if [ "$command" == 'allow' ]; then
-		echo $rest >> ./allow$channel
+		echo $rest >> ./allow/$channel
 		msgowner "allowing $rest on $channel"
 	elif [ "$command" == 'deny' ]; then
-		sed -ie "s/$rest//g" ./allow$channel
-		msgowner "allow$channel contains:"
-		msgowner "$(cat ./allow$channel)"
+		sed -ie "s/$rest//g" ./allow/$channel
+		msgowner "allow/$channel contains:"
+		msgowner "$(cat ./allow/$channel)"
 	fi
 fi	
