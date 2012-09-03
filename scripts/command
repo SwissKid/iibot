@@ -10,6 +10,7 @@ shift
 rest=$@
 allowed=$(cat "./allow/$channel")
 command=$(echo $commandold | tr [:upper:] [:lower:])
+restlower=$(echo $rest | tr [:upper:] [:lower:])
 
 
 function allowcheck() {
@@ -32,6 +33,10 @@ elif [ "$command" == 'manga' ] ; then
 elif [ "$command" == 'lastchap' ] ; then
 	allowcheck swissbox
 	./scripts/lastchap $rest
+#latest modified
+elif [ "$command" == 'latest' ]; then 
+	allowcheck swissbox
+	./scripts/latest $restlower
 ##lets try a request system
 elif [ "$command" == 'request' ] ; then
 	allowcheck swissbox

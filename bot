@@ -1,13 +1,9 @@
 #!/bin/bash
 source ./configuration
+source ./functions
 rm -r "$ircdir/$server/"
 mkdir -p "$ircdir/$server/$owner/"
 touch "$ircdir/$server/$owner/out"
-
-function msgowner() {
-echo "/privmsg $owner :$@" > "$ircdir/$server/in"
-}
-
 
 
 run=true
@@ -116,7 +112,7 @@ function ownermessage(){
 #			control_c
 #		fi
 #
-	done & 
+	done 
 }
 
 #function servermessage() {
@@ -162,15 +158,13 @@ while [ $run == true ]; do
 	./register
 	##you'll have to put your own command to identify with nickserv here, you can't have my pass
 	for i in $initchannel; do
-		channel=$i
-		mkdir $ircdir/$server/$i/
-		touch $ircdir/$server/$i/out
 		echo "/j $i" > $ircdir/$server/in
+		sleep 1
 		commandme $i &
 	done
-	echo "/privmsg $owner :I AM READY" > $ircdir/$server/in
+	msgowner "I AM READY"
 #	servermessage
-	ownermessage
+	ownermessage &
 	wait "$iipid"
 done 
 

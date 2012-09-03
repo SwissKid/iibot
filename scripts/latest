@@ -1,0 +1,71 @@
+#!/bin/bash
+set -- $@
+number=$1
+shift
+amount=$1
+shift
+type=$1
+. configuration
+
+function toobig() {
+	echo "I'm sorry, $number of $amount is a ridiculous number. Please choose something better."
+	exit 0
+}
+
+
+
+if [ "$amount" == "days" ]; then
+	if [ "$number" -le 11 ]; then
+		find $filesdir/$type/ -maxdepth 1 -mtime -"$number" -printf "%f \n" > searchresults.txt
+		sed -ie 1d searchresults.txt
+	else
+		toobig
+	fi
+elif [ "$amount" == "hours" ]; then
+	if [ "$number" -le 30 ]; then
+		time=$(expr $number "*" 60)
+		find $filesdir/$type/ -maxdepth 1 -mmin -"$time" -printf '%f \n' > searchresults.txt
+		sed -ie 1d searchresults.txt
+	else
+		toobig
+	fi
+elif [ "$amount" == "minutes" ]; then
+	if [ "$number" -le 120 ]; then
+		find $filesdir/$type/ -maxdepth 1 -mmin -"$number" > searchresults.txt
+		sed -ie 1d searchresults.txt
+	else
+		toobig
+	fi
+elif [ "$amount" == "files" ]; then
+	if [ "$number" -le 5 ]; then
+		ls -t $filesdir/$type/ | head -n 5 > searchresults.txt
+	else
+		toobig
+	fi
+else
+	echo "I don't recognize that unit of measurement. Please use days, hours, or minutes."
+fi
+
+lines=$(wc -l < searchresults.txt)
+
+
+if [ "$lines" -ge 6 ]; then
+	echo "I'm sorry, there are more than 5 results, please reduce the amount of time."
+else
+	if [ "$amount" == "files" ]; then
+		echo -n "The $number most recently modified files in $type are: " > tosay.txt
+	else
+		echo -n "The $type files modified in the last $number $amount are: " > tosay.txt
+	fi
+	n=2
+	cat searchresults.txt | while read line; do
+		if [ "$n" -le "$lines" ]; then
+			echo -n "$line, " >> tosay.txt
+			n=`expr $n + 1`;
+		else
+			echo "and $line." >> tosay.txt
+			n=`expr $n + 1`;
+		fi
+	done
+	cat tosay.txt
+fi
