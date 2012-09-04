@@ -33,6 +33,7 @@ source runningconf.cnf
 source ./functions
 source ./extrafunc
 while true; do 
+	echo "ii starting up!" >&1
 	$iidir/ii -s $server -n $nick -f "Iamabot" -i $ircdir &
 	iipid="$!"
 	export iipid
@@ -41,6 +42,7 @@ while true; do
 	sleep 3
 	##you'll have to put your own command to identify with nickserv here, you can't have my pass
 	for i in $initchannel; do
+		echo "joining $i" >&3
 		echo "/j $i" > "$ircdir/$server/in"
 		sleep 1
 		commandme $i &
@@ -49,6 +51,7 @@ while true; do
 	ownermessage &
 	./register
 	wait "$iipid"
+	echo "ii seems to have crashed, should be restarting now!" >&2
 done 
 }
 

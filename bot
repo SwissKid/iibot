@@ -14,8 +14,8 @@ OPTIONS:
 		Show this help
 		
 	$(maketext bold)-d$(maketext reset) or $(maketext bold)--debug$(maketext reset) (number)
-		Change debugging level. 1 only logs stdout, 2 logs stderr 3 logs
-			additional info, and 4 and 5 make you feel good.
+		Change debugging level. 1 logs just about nothing, 2 logs stderr 3 logs
+			additional info, and 4 and 5 make you feel good/fill your HDD.
 		$(maketext bold)Default: Level 2 $(maketext reset)
 	$(maketext bold)-D$(maketext reset) or $(maketext bold)--Daemon$(maketext reset)
 		Run the bot as a Daemon. This is jenky right now, I suggest you just add

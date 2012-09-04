@@ -1,16 +1,12 @@
 #!/bin/bash
-echo "--commandme executing with $@" >&3
+echo "$0 executing with $@" >&3
 channel=$@
-source runningconf.cnf
 source functions
 echo > "$ircdir/$server/$channel/out"
 joined=true
 echo "true" > "in/$channel"
 tailf -n1 "$ircdir/$server/$channel/out" |\
  while read -r date time nick msg; do
-	echo "the line is $date $time $nick $msg" >&3
-	echo "Read on $channel worked (maybe)" >&3
-	tail -n1 "$ircdir/$server/$channel/out" >&3
 	set -- $msg
 	start=$1
 	shift
@@ -18,6 +14,7 @@ tailf -n1 "$ircdir/$server/$channel/out" |\
 	truenick=${nick:1:-1}
 	joined=$(tail -n1 "in/$channel")
 	if [ "$joined" == "false" ]; then
+		echo "in/$channel came out as false, exiting" >&3
 		exit 0
 	fi
 	if [ -z "$date" ]; then
@@ -25,15 +22,15 @@ tailf -n1 "$ircdir/$server/$channel/out" |\
 	elif [ "$(echo $channel | head -c 1)" == '#' ]; then
 		if [[ "$msg" == swissboxbot:* ]]; then
 			./scripts/saymyname $channel $truenick $msg
-			echo "$date $time $nick $msg" >&4
+			echo "$0 -- $date $time $nick $msg" >&4
 		fi
 	elif [ "$truenick" == "$channel" ]; then
-		echo "In a privmsg, was messaged $msg from $nick" >&3
+		echo "$0 -- In a privmsg, was messaged $msg from $nick" >&3
 		./scripts/saymyname $channel $truenick $msg 
 	else
 		msgowner $channel and $truenick are giving me issues!
-		echo "$channel and $truenick and $msg caused errors in commandme, but we'll try to continue" >&2
-		echo "the line is $date $time $nick $msg" >&3
-		#exit 1
+		echo "$0 -- $channel and $truenick and $msg caused errors in commandme, quitting" >&2
+		echo "$0 -- the line is $date $time $nick $msg" >&3
+		exit 1
 	fi
 done
