@@ -2,9 +2,6 @@
 msg=$@
 source ./configuration
 source ./functions
-function commandme(){
-	$iidir/commandme $channel > "$ircdir/$server/$channel/in"
-}
 set -- $msg
 i=$1
 shift
@@ -17,7 +14,8 @@ if [ "$(echo $i | head -c 1)" == '!' ]; then
 
 
 else
-	echo "Master wants me to $i $channel and $message"
+	command=$(echo $i | tr [:upper:] [:lower:])
+	echo "Master wants me to $command $channel and $message"
 	if [ "$(echo $channel | head -c 1)" != "#" ]; then
 		echo $channel
 		newchannel=$(echo "#""$channel")
@@ -26,28 +24,29 @@ else
 	fi
 ##Commands (perhaps I should seperate this)
 	#Join
-	if [ "$i" == 'j' ] || [ "$i" == 'join' ]; then
-			echo "/j $channel"
-			echo "/j $channel" > "$ircdir/$server/in"
-			echo "true" > "in/$channel"
-			sleep 1
-			commandme &
-			msgowner "Joining $channel"
+	if [ "$command" == 'j' ] || [ "$command" == 'join' ]; then
+		echo "/j $channel"
+		echo "/j $channel" > "$commandrcdir/$server/in"
+		echo "true" > "in/$channel"
+		sleep 1
+		commandme &
+		msgowner "Joining $channel"
 	#Speak
-	elif [ "$i" == 'say' ] || [ "$i" == 'Say' ]; then
+	elif [ "$command" == 'say' ] ; then
 		echo "/privmsg $channel :$message"
-		echo "/privmsg $channel :$message" > "$ircdir/$server/in"
+		echo "/privmsg $channel :$message" > "$commandrcdir/$server/in"
 
 	#Part
-	elif [ "$i" == 'q' ] || [ "$i" == 'part' ] || [ "$i" == 'p' ]; then
+	elif [ "$command" == 'q' ] || [ "$command" == 'part' ] || [ "$command" == 'p' ]; then
 		echo "$msg"
 		msgowner "Parting $channel with message $message"
-		echo -e "/part $channel :\"$message\"" > "$ircdir/$server/in"
+		echo -e "/part $channel :\"$message\"" 
+		echo -e "/part $channel :\"$message\"" > "$commandrcdir/$server/in"
 		echo "false" > "in/$channel"
 		
 
 	#	#Quit  -- not yet functional
-	#	elif [ "$i" == 'quit' ] || [ "$i" == 'Quit' ]; then
+	#	elif [ "$command" == 'quit' ] || [ "$command" == 'Quit' ]; then
 	#		echo "quit"
 	#		msgowner Shutting Down
 	#		control_c

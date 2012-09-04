@@ -4,9 +4,45 @@
 truenick=$1
 ./configuration
 ./functions
-if [ -d "$ircdir/$server/$truenick/" ]; then
-	if [ -a "$ircdir/$server/$trueick/in" ] && [ -a "$ircdir/$server/$trueick/out" ]; then
-		hour=$(expr `date %k` + 1)
-		minute=$(date %M)
-		privmsg $truenick "Now listening until $hour:$minute"
-		
+if [ "$@" == 'clear' ]; then
+	if [ -d "$ircdir/$server/$truenick/" ]; then
+		rm -r $ircdir/$server/$truenick
+		echo "$truenick's query has been reset."
+	else
+		echo "$truenick's query cannot be found. Try starting one with simply !listen."
+	fi
+	exit 0
+elif [ -n "$@" ]; then
+	if [ -d "$ircdir/$server/$truenick/" ]; then
+		if [ -a "$ircdir/$server/$trueick/in" ] && [ -a "$ircdir/$server/$trueick/out" ]; then
+			hour=$(expr `date %k` + 1)
+			minute=$(date %M)
+			./commandme $truenick &
+			echo "Now listening until $hour:$minute" >> "$ircdir/$server/$truenick/in"
+		else
+			rm -r "$ircdir/$server/$truenick" 
+			echo "The query for $truenick was broken. $truenick: will you please message me then try again?"
+		fi
+	else
+		privmsg $truenick "Please message back 'yes' within 10 seconds to begin a query with me."
+		timeout=1
+		while [ "$timeout" -le 11 ];do
+			if [ -a "$ircdir/$server/$trueick/in" ] && [ -a "$ircdir/$server/$trueick/out" ]; then
+				hour=$(expr `date %k` + 1)
+				minute=$(date %M)
+				./commandme $truenick &
+				echo "Now listening until $hour:$minute" >> "$ircdir/$server/$truenick/in"
+				exit 0
+			else
+				timeout=$(expr $timeout "+" 1)
+				sleep 1
+			fi
+		done
+		if [ "$timeout" -ge 11 ]; then
+			privmsg $truenick "You seem to have taken too long, or I have a bug."
+		fi
+	fi
+else 
+	echo "I'm sorry, I don't understand what you mean by \"$@\""
+fi
+exit 0

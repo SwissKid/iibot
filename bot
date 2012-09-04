@@ -19,134 +19,12 @@ function control_c() {
 	}
 
 #command grabbing
-function commandme(){
-	echo "$iidir/commandme $channel  > "$ircdir/$server/$channel/in"" 
-	$iidir/commandme $channel  > "$ircdir/$server/$channel/in"
-#	touch "$ircdir/$server/$channel/out"
-#	tailf -n1 "$ircdir/$server/$channel/out" | while read -r date time nick msg; do 
-#	echo $nick $msg
-#	if [ "$(echo $msg | head -c 1)" == '!' ]; then
-#		$iidir/commandme $owner $nick $msg > "$ircdir/$server/$channel/in"
-## Seperating the command from the program
-#		set -- $msg
-#		start=$1
-#		shift
-#		rest=$@
-#		command=$(echo $start | sed -e "s/^!//")
-#		
-#		##Time to start writing what commands do
-#		if [ "$command" == 'search' ] || [ "$command" == 'Search' ]; then
-#			echo "$msg"
-#			$iidir/anime $rest > "results.txt"
-#			cat results.txt
-#			cat results.txt > "$ircdir/$server/$channel/in"
-#	
-#		##Time to check space left
-#		elif [ "$command" == 'space' ] || [ "$command" == 'Space' ]; then
-#			echo "$msg"
-#			if [ "$rest" == 'hdd1' ]; then
-#				rest="/dev/sdb4"
-#			fi
-#			if df -h | grep $rest; then 
-#				set -- $(df -h | grep $rest)
-#				filesystem=$1
-#				size=$2
-#				availible=$4
-#				used=$5
-#				echo "On $rest there is $availible availible of $size. $used of this drive is full." > "$ircdir/$server/$channel/in"
-#			else
-#				echo "Seems this device cannot be found." > "$ircdir/$server/$channel/in"
-#			fi
-#
-#		fi
-#	fi
-#	done
-}
 
 function ownermessage(){
 	tailf -n1 "$ircdir/$server/$owner/out" | while read -r date time nick msg; do
 		$iidir/ownercommand $msg
-#		set -- $msg
-#		i=$1
-#		shift
-#		channel=$1
-#		shift
-#		message=$@
-#		echo "Master wants me to $i $channel and $message"
-#		if [ "$(echo $channel | head -c 1)" != "#" ]; then
-#			echo $channel
-#			newchannel=$(echo "#""$channel")
-#			channel="$newchannel"
-#			echo $newchannel
-#		fi
-#
-#
-#		#Join
-#		if [ "$i" == 'j' ] || [ "$i" == 'join' ]; then
-#			if [ ! -d "$ircdir/$server/$channel/" ]; then
-#				echo "/j $channel"
-#				echo "/j $channel" > "$ircdir/$server/in"
-#				echo "/privmsg $owner :Joining $channel" > "$ircdir/$server/in"
-#				commandme &
-#			else
-#				echo "/j $channel"
-#				echo "/j $channel" > "$ircdir/$server/in"
-#				echo "/privmsg $owner :Joining $channel" > "$ircdir/$server/in"
-#			fi	
-#		#Speak
-#		elif [ "$i" == 'say' ] || [ "$i" == 'Say' ]; then
-#			echo "/privmsg $channel :$message"
-#			echo "/privmsg $channel :$message" > "$ircdir/$server/in"
-#	
-#		#Part
-#		elif [ "$i" == 'q' ] || [ "$i" == 'part' ] || [ "$i" == 'p' ]; then
-#			echo "$msg"
-#			msgowner Parting $channel with message $message
-#			echo "/part $channel :$message" > "$ircdir/$server/in"
-#
-#		#Quit
-#		elif [ "$i" == 'quit' ] || [ "$i" == 'Quit' ]; then
-#			echo "quit"
-#			msgowner Shutting Down
-#			control_c
-#		fi
-#
 	done 
 }
-
-#function servermessage() {
-#	touch "$ircdir/$server/out"
-#	printf "$ircdir/$server/out" | while read -r date time nick msg; do
-#		if [ "$(echo $nick | head -c 1)" == '<' ] && [ "$(echo $msg | head -c 1)" == '!' ]; then
-#			msg=$(echo $msg | sed -e "s/^!//")
-#			set -- $msg
-#			command=$1
-#			shift
-#			rest=$@
-#			echo $nick wants me to $command and $@
-#			
-#			##User Commands
-#			if [ "$command" == 'later' ]; then
-#				set -- $rest
-#				waitnick=$1
-#				shift
-#				message=$@
-#				nick=$(echo $nick | sed -e "s/^<//" -e "/>$//")
-#				echo "Waiting to see $waitnick to send him $message" > "$ircdir/$server/$nick/in"
-#				printf "$ircdir/$server/out" | while read -r date time nick msg; do
-#					nick=$(echo $nick | sed -e "s/^<//" -e "/>$//")
-#					if [ "$nick" == "$waitnick" ]; then
-#						echo "/privmsg $waitnick :$message" > "$ircdir/$server/in"
-#					fi
-#				done &
-#			fi
-#		else
-#			echo "Sorry, I don't recognize that command" > "$ircdir/$server/$nick/in"
-#		fi
-#
-#done &
-#
-#}
 
 
 
@@ -162,7 +40,6 @@ while true; do
 		commandme $i &
 	done
 	msgowner "I AM READY"
-#	servermessage
 	ownermessage &
 	wait "$iipid"
 done 

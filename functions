@@ -35,3 +35,9 @@ name=$1
 shift
 echo "/privmsg $name :$@" > "$ircdir/$server/in"
 }
+
+
+function commandme(){
+	echo "./commandme $channel  > "$ircdir/$server/$channel/in"" 
+	./commandme $channel  > "$ircdir/$server/$channel/in"
+}
