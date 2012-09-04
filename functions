@@ -38,6 +38,7 @@ echo "/privmsg $name :$@" > "$ircdir/$server/in"
 
 
 function commandme(){
+	channel=$@
 	echo "./commandme $channel  > "$ircdir/$server/$channel/in"" 
 	./commandme $channel  > "$ircdir/$server/$channel/in"
 }

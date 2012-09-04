@@ -1,6 +1,6 @@
+#/bin/bash
 ##This file is a configuration file, sourced in almost every other script.
 # Once I'm good at this, this is the only file you should have to modify.
-
 
 export owner="swiss"
 export nick="swissboxbot"
@@ -9,3 +9,4 @@ export initchannel="#swisstest"
 export ircdir="/home/swiss/testing"
 export iidir="/home/swiss/iibot"
 export filesdir="/home/sftp/mount/hdd2"
+export logdir="$iidir/log"

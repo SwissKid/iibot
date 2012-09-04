@@ -5,6 +5,21 @@ rm -r "$ircdir/$server/"
 mkdir -p "$ircdir/$server/$owner/"
 touch "$ircdir/$server/$owner/out"
 
+##logging
+datetime=$(date +%d%m%y)
+if [ -a $logdir/bot.log.$datetime ]; then
+	if [ -a $logdir/bot.log.$datetime.01 ]; then
+		number=$(expr "$(ls -t $logdir | head -n 1 | sed -e "s/^.*$datetime\.//")" "+" 1 )
+	else
+		number=1
+	fi
+	mv "$logdir/bot.log" "$logdir/bot.log.$datetime.$number"
+else
+	mv "$logdir/bot.log" "$logdir/bot.log.$datetime"
+fi
+	
+exec > $logdir/bot.log 2>&1
+
 
 trap control_c SIGINT
 #ctrl-c inttrupt
@@ -32,7 +47,6 @@ while true; do
 	$iidir/ii -s $server -n $nick -f "Iamabot" -i $ircdir &
 	iipid="$!"
 	sleep 3
-	./register
 	##you'll have to put your own command to identify with nickserv here, you can't have my pass
 	for i in $initchannel; do
 		echo "/j $i" > "$ircdir/$server/in"
@@ -41,6 +55,7 @@ while true; do
 	done
 	msgowner "I AM READY"
 	ownermessage &
+	./register
 	wait "$iipid"
 done 
 
