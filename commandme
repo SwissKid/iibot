@@ -1,7 +1,7 @@
 #!/bin/bash
 channel=$@
 source configuration
-
+source functions
 touch "$ircdir/$server/$channel/out"
 joined=true
 tailf -n1 "$ircdir/$server/$channel/out" |\
@@ -10,27 +10,21 @@ tailf -n1 "$ircdir/$server/$channel/out" |\
 	start=$1
 	shift
 	rest=$@
-	command=$(echo $start | sed -e "s/^!//")
 	truenick=$(echo $nick | sed -e "s/^<//" -e "s/>$//")
 
-joined=$(tail -n1 in$channel)
-if [ "$joined" == "false" ]; then
-	exit 0
-fi
-if [[ "$msg" == swissboxbot:* ]]; then
-	./scripts/saymyname $channel $truenick $msg
-fi
-
-
-##Name recognition thing ain't workin
-#	if [ "$(echo $msg | head -c 12)" == 'swissboxbot:' ]; then
-#		text=$(echo $msg | sed -e "s/swissboxbox: //")
-#		if [ "$( echo $text | head -c 8 | tr '[A-Z]' '[a-z]')" == 'fuck you' ]; then
-#			echo "You'd like to, wouldn't you?!"
-#		fi 
-#	fi
-#	if [ "$(echo $msg | head -c 1)" == '!' ]; then
-#	##Send the commands to the scripts!
-#		./scripts/command $truenick $command $rest
-#	fi
+	joined=$(tail -n1 "in/$channel")
+	if [ "$joined" == "false" ]; then
+		exit 0
+	fi
+	if [ "$(echo $channel | head -c 1)" == '#' ]; then
+		if [[ "$msg" == swissboxbot:* ]]; then
+			./scripts/saymyname $channel $truenick $msg
+		fi
+	elif [ "$truenick" == "$channel" ]; then
+		./script/saymyname $channel $truenick $msg
+	else
+		msgowner $channel and $truenick are giving me issues!
+		echo "/p $channel :\"I broke!\"" >> "$ircdir/$server/in"
+		exit 0
+	fi
 done

@@ -6,7 +6,6 @@ mkdir -p "$ircdir/$server/$owner/"
 touch "$ircdir/$server/$owner/out"
 
 
-run=true
 trap control_c SIGINT
 #ctrl-c inttrupt
 function control_c() {
@@ -151,14 +150,14 @@ function ownermessage(){
 
 
 
-while [ $run == true ]; do
+while true; do 
 	$iidir/ii -s $server -n $nick -f "Iamabot" -i $ircdir &
 	iipid="$!"
 	sleep 3
 	./register
 	##you'll have to put your own command to identify with nickserv here, you can't have my pass
 	for i in $initchannel; do
-		echo "/j $i" > $ircdir/$server/in
+		echo "/j $i" > "$ircdir/$server/in"
 		sleep 1
 		commandme $i &
 	done

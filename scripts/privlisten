@@ -1,0 +1,12 @@
+#!/bin/bash
+##This script will open a private listening channel with the person requesting it.
+##This is for special listening for those who don't want to fill a channel.
+truenick=$1
+./configuration
+./functions
+if [ -d "$ircdir/$server/$truenick/" ]; then
+	if [ -a "$ircdir/$server/$trueick/in" ] && [ -a "$ircdir/$server/$trueick/out" ]; then
+		hour=$(expr `date %k` + 1)
+		minute=$(date %M)
+		privmsg $truenick "Now listening until $hour:$minute"
+		

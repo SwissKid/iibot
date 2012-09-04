@@ -4,8 +4,20 @@ if [[ "$rest" == */* ]] ; then
 	echo "Why don't you try and exploit someone else?"
 else
 	if [ -d "/home/sftp/mount/hdd2/anime/$rest" ]; then
-		echo -e "The files in $rest are:"
-		echo "$(ls "/home/sftp/mount/hdd2/anime/$rest")"
+		echo -ne "The files in $rest are: " > tosay.txt
+		ls "/home/sftp/mount/hdd2/anime/$rest" > searchresults.txt
+		lines=$(wc -l < searchresults.txt)
+		n=2
+		cat searchresults.txt | while read line; do
+			if [ "$n" -le "$lines" ]; then
+				echo -n "$line, " >> tosay.txt
+				n=`expr $n + 1`;
+			else
+				echo "and $line." >> tosay.txt
+				n=`expr $n + 1`;
+			fi
+		done
+	cat tosay.txt
 	else
 		echo "Whoops, I couldn't find $rest"
 	fi

@@ -1,38 +1,34 @@
 #!/bin/bash
+. functions
+. configuration
 #filesgrep=$(ls /home/sftp/files/anime/ | grep -i $1)
-hdd2grep=$(ls /home/sftp/mount/hdd2/anime/ | grep -i $1)
 #hotswapgrep=$(ls /home/sftp/mount/hotswap/anime/ | grep -i $1)
 
 ##Removed filesgrep and hotswap as I have migrated to the 3tb drive
-linenumber=$(echo -e "$hdd2grep" | wc -l)
-if [ "$hdd2grep" == '' ]; then
+ls /home/sftp/mount/hdd2/anime/ | grep -i $1 > searchresults.txt
+linenumber=$(wc -l < searchresults.txt)
+if [ "$linenumber" == '0' ]; then
 	echo "No files found"
 	exit 0
-fi
-
-if [ $linenumber != 1 ]; then
+elif [ "$linenumber" != 1 ]; then
 	echo "There were $linenumber files found"
-	n=1
 	if [ $linenumber -le 5 ]; then
-		echo -n "The found files are: "
-		while [ $n -le $linenumber ]
-		do
-			line=$(echo "$hdd2grep" | sed -n "$n"p)
-			if [ "$n" -lt "$linenumber" ];
-			 then
-				echo -n "$line, ";
-			 else
-				echo "$line."
-			fi
-			n=`expr $n + 1`;
-		done
+		searchresults 
+##		while [ $n -le $linenumber ]
+##		do
+##			line=$(echo "$hdd2grep" | sed -n "$n"p)
+##			if [ "$n" -lt "$linenumber" ];
+##			 then
+##				echo -n "$line, ";
+##			 else
+##				echo "$line."
+##			fi
+##			n=`expr $n + 1`;
+##		done
 	else
 		echo "That's way too many to display nicely. Please refine your search terms."
 	fi
 else
 	echo "There was one file found."
-	n=1
-	echo -n "The found file was: "
-	line=$(echo "$hdd2grep" | sed -n "$n"p)
-	echo "$line."	
+	searchresults
 fi

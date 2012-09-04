@@ -1,3 +1,7 @@
+##This file is a configuration file, sourced in almost every other script.
+# Once I'm good at this, this is the only file you should have to modify.
+
+
 export owner="swiss"
 export nick="swissboxbot"
 export server="irc.freenode.net"

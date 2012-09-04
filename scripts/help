@@ -1,0 +1,12 @@
+#!/bin/bash
+##This should be a help script, hopefully it works nicely.
+. functions
+. configuration
+truenick=$1
+shift
+topic=$@
+
+help/basiccommands $@ | while read line; do
+	privmsg $truenick $line
+done
+

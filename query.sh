@@ -5,7 +5,7 @@
 # Purpose: locate new queries for the ii irc client
 # ----------------------------------------------------
 
-IRCPATH=$HOME/irc
+IRCPATH=$HOME/testing
 TMPFILE=$IRCPATH/queries.tmp
 
 if [ ! -f $TMPFILE ]; then

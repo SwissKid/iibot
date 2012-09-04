@@ -7,13 +7,8 @@ type=$(echo $1 | tr [:upper:] [:lower:])
 shift
 rest=$@
 ./configuration
-function privmsg() {
-set -- $@
-name=$1
-shift
-msg=$@
-echo "/PRIVMSG $name :$msg" >> $ircdir/$server/in
-}
+. functions
+
 
 if [ "$type" != 'anime' ] && [ "$type" != 'manga' ]; then
 	privmsg $truenick "I'm sorry, i only have an anime or manga list"

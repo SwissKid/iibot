@@ -1,0 +1,96 @@
+#!/bin/bash
+#Making this a script so that variables can be put in place.
+. configuration
+
+if [ -n "$@" ]; then
+	cat << END
+All commands to $botname must have $botname: !command. Without the name or the
+'!' the command will not be processed. Here are a few short commands:
+!lastchap - Show the last chapter of that manga. (naming must be correct)
+!latest - Show the latest updated files of the category you choose.
+!manga - Search the manga located within $hostname
+!request - Add, remove, or view the current requests for manga or anime
+!search - Search the anime located within $hostname
+!show - After searching, you may view the different releases of that show
+!space - Show the amount of space left on the requested device
+!google - Show the first google result for your search (usually disabled) 
+To show more detailed help about a command, use !help [command name].
+Ex: "!help manga"
+END
+
+elif [ "$@" == "lastchap" ]; then
+	cat << END
+!lastchap Help:
+Lastchap can be used to view the most recent chapter of a manga that is
+contained on $hostname. This only will work provided the naming scheme shows the
+chapters in order when sorted alphebetically. The name of the manga must be
+exact, so using !manga first often helps.
+END
+
+elif [ "$@" == "latest" ]; then
+	cat << END
+!latest Help:
+Latest can be used to view the most recently changed anime or manga files in a
+certain amount of time. The format for the request must be
+"!latest [number] [files, minutes, hours, days] [anime, manga]"
+If more than 5 results fit your query they will not be displayed in order to
+reduce spam.
+END
+
+elif [ "$@" == "manga" ]; then
+	cat <<END
+!manga Help:
+The manga command simply searches the manga directory for the search term.
+Useage: "!manga [Search term]"
+END 
+
+elif [ "$@" == "request" ]; then
+	cat <<END
+!request Help
+The request command is used to allow users to request shows or manga series to
+be added to $hostname. Manga and anime each have their own category to reduce
+confusion. A user may add a show, remove (fulfill the request) a show, list the
+current requests, and search the current requests. 
+Useage: "!request [add, remove, list, search] [manga, anime] [term]"
+END
+
+elif [ "$@" == "search" ]; then
+	cat <<END
+!search Help:
+The search command simply searches the anime directory for the search term.
+Useage: "!search [Search term]"
+END
+
+elif [ "$@" == "show" ]; then
+	cat <<END
+!show Help:
+The show command can be used to view the different release groups or seasons of
+a show. This will display the subdirectories to the main show's directory. The
+name of the show must be spelled correctly and is case sensitive so it is
+reccomended to first !search to get the name correct.
+Useage: "!show [name of show]"
+END
+
+elif [ "$@" == "space" ]; then
+	cat <<END
+!space Help:
+The space command is used to show how much space is left on a device on
+$hostname. The search can either be for the mount location or the device number.
+Useage: "!space [device]"
+END
+
+
+elif [ "$@" == "google" ]; then
+	cat <<END
+!google Help:
+The google command searches google and displays the first result to your query.
+Due to the likelyhood of this command being abused, it is usually disabled. 
+Useage: "!google [search term]"
+END
+
+else
+	cat <<END
+I'm sorry, I don't recognize $@ as one of my commands. Why don't you try a simple !help first?
+END
+
+fi

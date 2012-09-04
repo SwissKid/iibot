@@ -2,3 +2,36 @@
 function msgowner() {
 echo "/privmsg $owner :$@" > "$ircdir/$server/in"
 }
+
+function searchresults() {
+##Will write it's own lines to tosay.txt unless tolde "self"
+lines=$(wc -l < searchresults.txt)
+if [ "$lines" == "1" ]; then
+	if [ "$@" != "self" ]; then
+		echo -n "The only result is: " > tosay.txt
+	fi
+	echo " $(cat searchresults.txt)." >> tosay.txt
+else
+	if [ "$@" != "self" ]; then
+		echo -n "The found files are: " > tosay.txt
+	fi
+	n=2
+	cat searchresults.txt | while read line; do
+		if [ "$n" -le "$lines" ]; then
+			echo -n "$line, " >> tosay.txt
+			n=`expr $n + 1`;
+		else
+			echo "and $line." >> tosay.txt
+			n=`expr $n + 1`;
+		fi
+	done
+fi
+cat tosay.txt
+}
+
+function privmsg() {
+set -- $@
+name=$1
+shift
+echo "/privmsg $name :$@" > "$ircdir/$server/in"
+}

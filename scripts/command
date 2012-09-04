@@ -8,28 +8,37 @@ commandold=$1
 entire=$@
 shift
 rest=$@
-allowed=$(cat "./allow/$channel")
 command=$(echo $commandold | tr [:upper:] [:lower:])
 restlower=$(echo $rest | tr [:upper:] [:lower:])
 
 
 function allowcheck() {
+if [ "$(echo $channel | head -c 1)" == '#' ];then
+	allowed=$(cat "./allow/$channel")
+else 
+	allowed=$(cat "./allow/priv")
+fi
 if [[ "$allowed" != *$@* ]]; then
-	echo "This functionality is disabled on $channel"
+	echo "This functionality is disabled for $channel"
 	exit 0
 fi
 }
+##specialized commands for the privmsgs. Not needed yet.
+#if [ "$truenick" == "$channel" ]; then
+#
+#fi
 
 
+#lets start with help
+if [ "$command" == 'help' ]; then
+	./scripts/help $truenick $restlower
 ##main search ( swissbox
-if [ "$command" == 'search' ]; then 
+elif [ "$command" == 'search' ]; then 
 	allowcheck swissbox
-	./scripts/search $rest > "results.txt"
-	cat results.txt
+	./scripts/search $rest 
 elif [ "$command" == 'manga' ] ; then
 	allowcheck swissbox
-	./scripts/manga $rest > "results.txt"
-	cat results.txt
+	./scripts/manga $rest
 elif [ "$command" == 'lastchap' ] ; then
 	allowcheck swissbox
 	./scripts/lastchap $rest
@@ -52,6 +61,7 @@ elif [ "$command" == 'show' ]; then
 ##Time to start having fun
 elif [ "$command" == 'say' ] || [ "$command" == 'Say' ]; then
 	./scripts/say $truenick $rest
+
 elif [ "$command" == 'time' ]; then
 	echo "The correct time is `date`"
 
@@ -65,4 +75,9 @@ elif [ "$command" == 'bannedwords' ]; then
 #need to allow swissbox and googling when needed
 elif [ "$command" == 'allow' ] || [ "$command" == 'deny' ] ; then
 	./scripts/allow $channel $truenick $command $rest
+
+
+
+elif [ "$command" == 'query' ]; then
+	./scripts/privlisten $truenick
 fi
