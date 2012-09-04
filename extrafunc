@@ -1,0 +1,33 @@
+#!/bin/bash
+
+##Setting the debug level
+##Because of who knows what, I can't do this with a for string. Looks like I have to manually set it.
+if [[ $debuglevel -ge 2 ]]; then
+	exec 2>&1
+	if [[ $debuglevel -ge 3 ]]; then
+		exec 3>&1
+		if [[ $debuglevel -ge 4 ]]; then
+			exec 4>&1
+			if [[ $debuglevel -ge 5 ]]; then
+				exec 5>&1
+			else
+				exec 5>/dev/null
+			fi
+		else
+			exec 4>/dev/null
+			exec 5>/dev/null
+		fi
+	else
+		exec 3>/dev/null
+		exec 4>/dev/null
+		exec 5>/dev/null
+	fi
+else
+	exec 2>/dev/null
+	exec 3>/dev/null
+	exec 4>/dev/null
+	exec 5>/dev/null
+fi
+for i in `seq 1 5`; do
+	echo this is a $i level message >&$i
+done

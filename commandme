@@ -4,6 +4,8 @@ source runningconf.cnf
 source functions
 touch "$ircdir/$server/$channel/out"
 joined=true
+echo "true" > "in/$channel"
+echo "Do lvl 3 messages go up without sourcing it?" >&3
 tailf -n1 "$ircdir/$server/$channel/out" |\
  while read -r date time nick msg; do
 	set -- $msg
