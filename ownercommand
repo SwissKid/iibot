@@ -1,20 +1,20 @@
 #!/bin/bash
+##Ownercommand (base dir)
 msg=$@
 source ./functions
 set -- $msg
-i=$1
+command=${1,,}
 shift
 channel=$1
 shift
 message=$@
-if [ "${i:0:1}" == '!' ]; then
+if [ "${command:0:1}" == '!' ]; then
 #if the commands start with ! then they're seperated!
 	msgowner `./scripts/ownercommand $msg`
 else
-	command=$(echo $i | tr [:upper:] [:lower:])
 	echo "$0 -- Master wants me to $command $channel and $message" >&3
 	if [ "${channel:0:1}" != "#" ]; then
-		newchannel=$(echo "#""$channel")
+		newchannel=${channel/^/#}
 		channel="$newchannel"
 	fi
 ##Commands (perhaps I should seperate this)
@@ -24,7 +24,7 @@ else
 		echo "/j $channel" > "$ircdir/$server/in"
 		echo "true" > "./in/$channel"
 		sleep 1
-		commandme $channel&
+		commandme $channel &
 		msgowner "Joining $channel"
 	#Speak
 	elif [ "$command" == 'say' ] ; then
@@ -38,6 +38,7 @@ else
 		echo -e "$0 -- /part $channel :\"$message\"" >&3
 		echo -e "/part $channel :\"$message\"" > "$ircdir/$server/in"
 		echo "false" > "in/$channel"
+		echo "echoing false into in/$channel" >&3
 		
 
 	#	#Quit  -- not yet functional

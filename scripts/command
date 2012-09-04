@@ -8,13 +8,12 @@ commandold=$1
 entire=$@
 shift
 rest=$@
-command=$(echo $commandold | tr [:upper:] [:lower:])
-restlower=$(echo $rest | tr [:upper:] [:lower:])
+command=${commandold,,}
 
 
 function allowcheck() {
 echo "Allowcheck on $swissbox by $truenick" >3&
-if [ "$(echo $channel | head -c 1)" == '#' ];then
+if [ "${channel:0:1}" == '#' ];then
 	allowed=$(cat "./allow/$channel")
 else 
 	allowed=$(cat "./allow/priv")
@@ -29,10 +28,14 @@ fi
 #
 #fi
 
+##IDEA
+#ownercheck function, to check if current nick is the owner, easier to do than if statements.
+
+
 
 #lets start with help
 if [ "$command" == 'help' ]; then
-	./scripts/help $truenick $restlower
+	./scripts/help $truenick ${rest,,}
 ##main search ( swissbox
 elif [ "$command" == 'search' ]; then 
 	allowcheck swissbox
@@ -46,7 +49,7 @@ elif [ "$command" == 'lastchap' ] ; then
 #latest modified
 elif [ "$command" == 'latest' ]; then 
 	allowcheck swissbox
-	./scripts/latest $restlower
+	./scripts/latest ${rest,,}
 ##lets try a request system
 elif [ "$command" == 'request' ] ; then
 	allowcheck swissbox

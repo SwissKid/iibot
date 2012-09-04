@@ -72,6 +72,7 @@ else
 		exit 1
 	fi
 fi
+echo "Loading configuration..."
 source ./runningconf.cnf
 
 ##Puttin the logfile away
@@ -107,6 +108,7 @@ fi
 ##Due to the fact the core had to be seperated for logging, the
 ##core is executed here.
 source ./core
+echo "Starting Logging"
 if [ "$daemon" == "true" ]; then
 	echo "sorry, but Daemonization is a bit quirky right now, so it's disabled. Feel free to background it yourself."
 	startii > $logfile

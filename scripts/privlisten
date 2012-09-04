@@ -27,7 +27,7 @@ if [ -z "$@" ]; then
 		timeout=1
 		while [ "$timeout" -le 11 ];do
 			if [ -e "$ircdir/$server/$trueick/in" ] && [ -e "$ircdir/$server/$trueick/out" ]; then
-				hour=$(expr `date +%k` + 1)
+				hour=$((`date +%k` + 1))
 				minute=$(date +%M)
 				commandme $truenick &
 				echo "$!" > "pid/$truenick"
