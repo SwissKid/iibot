@@ -5,7 +5,7 @@ shift
 amount=$1
 shift
 type=$1
-. configuration
+. runningconf.cnf
 . functions
 
 function toobig() {

@@ -6,7 +6,7 @@ shift
 type=$(echo $1 | tr [:upper:] [:lower:])
 shift
 rest=$@
-./configuration
+. runningconf.cnf
 . functions
 
 

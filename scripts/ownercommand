@@ -3,7 +3,7 @@ set -- $@
 command=$1
 shift
 rest=$@
-. configuration
+. runningconf.cnf
 . functions
 truecommand=$(echo $command | sed -e 's/^!//'| tr [:upper:] [:lower:] )
 if [ "$truecommand" == 'bannedwords' ] ; then

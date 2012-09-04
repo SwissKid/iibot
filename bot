@@ -40,7 +40,7 @@ exit 0
 if tput init; then
 	export tmuxable="true"
 fi
-
+daemon="false"
 debuglevel=2
 ##Checking the options
 if [ "$ops" ]; then
@@ -80,10 +80,12 @@ rm -r "$ircdir/$server/"
 mkdir -p "$ircdir/$server/$owner/"
 touch "$ircdir/$server/$owner/out"
 
-
 ##Puttin the logfile away
 if [ -n "$logfile" ]; then
+	if [ "$daemon" == 'false' ]; then exec 1>&1 | tee $logfile;
+	else
 	exec 1> $logfile
+	fi
 else
 	##logging
 	datetime=$(date +%d%m%y)
@@ -97,7 +99,9 @@ else
 	else
 		mv "$logdir/bot.log" "$logdir/bot.log.$datetime"
 	fi
+	if [ "$daemon" == 'false' ]; then exec 1>&1 | tee $logdir/bot.log; else 
 	exec 1> $logdir/bot.log
+	fi
 fi
 
 ##Setting the debug level

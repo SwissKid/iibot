@@ -1,6 +1,6 @@
 #!/bin/bash
 . functions
-. configuration
+. runningconf.cnf
 if [ "$(echo $1| tr [:upper:] [:lower:])" == 'ecchi' ]; then
 	set -- $@
 	shift

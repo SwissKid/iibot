@@ -1,6 +1,6 @@
 #!/bin/bash
 . functions
-. configuration
+. runningconf.cnf
 #filesgrep=$(ls /home/sftp/files/anime/ | grep -i $1)
 #hotswapgrep=$(ls /home/sftp/mount/hotswap/anime/ | grep -i $1)
 

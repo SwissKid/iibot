@@ -1,6 +1,6 @@
 #!/bin/bash
 channel=$@
-source configuration
+source runningconf.cnf
 source functions
 touch "$ircdir/$server/$channel/out"
 joined=true
@@ -19,12 +19,14 @@ tailf -n1 "$ircdir/$server/$channel/out" |\
 	if [ "$(echo $channel | head -c 1)" == '#' ]; then
 		if [[ "$msg" == swissboxbot:* ]]; then
 			./scripts/saymyname $channel $truenick $msg
+			echo "$date $time $nick $msg" >&3
 		fi
 	elif [ "$truenick" == "$channel" ]; then
 		./script/saymyname $channel $truenick $msg
 	else
 		msgowner $channel and $truenick are giving me issues!
 		echo "/p $channel :\"I broke!\"" >> "$ircdir/$server/in"
-		exit 0
+		echo "$channel and $truenick and $msg caused errors in commandme" >&2
+		exit 1
 	fi
 done

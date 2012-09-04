@@ -1,7 +1,7 @@
 #!/bin/bash
 ##This should be a help script, hopefully it works nicely.
 . functions
-. configuration
+. runningconf.cnf
 truenick=$1
 shift
 topic=$@

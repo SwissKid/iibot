@@ -5,7 +5,7 @@ shift
 command=$1
 shift
 rest=$@
-./configuration
+. runningconf.cnf
 function msgowner() {
 echo "/privmsg $owner :$@" > "$ircdir/$server/in"
 }

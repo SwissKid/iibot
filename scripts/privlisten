@@ -2,8 +2,8 @@
 ##This script will open a private listening channel with the person requesting it.
 ##This is for special listening for those who don't want to fill a channel.
 truenick=$1
-./configuration
-./functions
+. runningconf.cnf
+. functions
 if [ "$@" == 'clear' ]; then
 	if [ -d "$ircdir/$server/$truenick/" ]; then
 		rm -r $ircdir/$server/$truenick
