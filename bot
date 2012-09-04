@@ -75,10 +75,6 @@ else
 	fi
 fi
 
-##Initial Cleanup
-rm -r "$ircdir/$server/"
-mkdir -p "$ircdir/$server/$owner/"
-touch "$ircdir/$server/$owner/out"
 
 ##Puttin the logfile away
 if [ -n "$logfile" ]; then
@@ -145,6 +141,13 @@ fi
 #	echo {$i}and
 #	exec ${i/%/>/dev/null}
 #done
+
+
+
+##Initial Cleanup
+rm -r "$ircdir/$server/"
+mkdir -p "$ircdir/$server/$owner/"
+touch "$ircdir/$server/$owner/out"
 
 
 trap control_c SIGINT
