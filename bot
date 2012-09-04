@@ -1,8 +1,10 @@
 #!/bin/bash
 ops=$(getopt -q -o DFho:d::c: -l Daemon,daemon,help,output:,logfile:,foreground,debug::,logdir:,config:,configuration: -- "$@")
+export ops
 source ./functions
 
 function usage() {
+##Help message
 source ./configuration
 cat << EOF
 Usage: $0 options
@@ -15,58 +17,51 @@ OPTIONS:
 	$(maketext bold)-d$(maketext reset) or $(maketext bold)--debug$(maketext reset) (number)
 		Change debugging level. 1 only logs stdout, 2 logs stderr 3 logs
 			additional info, and 4 and 5 make you feel good.
+		$(maketext bold)Default: Level 2 $(maketext reset)
+	$(maketext bold)-D$(maketext reset) or $(maketext bold)--Daemon$(maketext reset)
+		Run the bot as a Daemon. This is jenky right now, I suggest you just add
+			a & to the end and background it yourself.
 	$(maketext bold)-F$(maketext reset) or $(maketext bold)--Foreground$(maketext reset)
-		Prevents the bot from becoming a daemon (standard) and does all logging
+		Prevents the bot from becoming a daemon and does all logging
 			to the terminal.
 	$(maketext bold)-o$(maketext reset) or $(maketext bold)--logfile$(maketext reset) (file)
 		Choose an alternate logfile to have the log written to for this run.
-		$(maketext bold)Default: $iidir/log/$(maketext normal)
+		$(maketext bold)Default: $logdir $(maketext normal)
 	$(maketext bold)-c$(maketext reset) or $(maketext bold)--config$(maketext reset) (file)
 		Choose an alternate configuration file 
 		$(maketext bold)Default: $iidir/configuration$(maketext normal)
 EOF
 exit 0
 }
+
+
 ##Terminal Testing Time
 ##If I end up wanting more tests than tput I'll move this to bin/termtests
 if tput init; then
 	export tmuxable="true"
 fi
-#about to try
-eval set -- $ops
-while true; do
-        case $1 in
-                -D| --[Dd]aemon)daemon="true"; shift;;
-                -c| --config*) conf="$2"; shift 2;;
-                -h| --help) usage; shift;;
-                -o| --logfile) logfile="$2"; shift 2 ;;
-                --[fF]oreground) daemon="false"; shift ;;
-                --logdir) logdir="$2"; shift 2 ;;
-                --debug | -d) if [ -z "$2" ]; then debuglevel=1; else if [[ "$2" -ge 1 ]] && [[ "$2" -le 5 ]];then debuglevel="$2"; else echo "The debug level is set to $2, which is not between 1 and 5."; exit 1; fi; fi; shift 2;;
-                --)shift;break;;
-                *)echo "I do not recognize $i as an option, have a read...."; shift ;;
 
-        esac
-done
+debuglevel=2
+##Checking the options
+if [ "$ops" ]; then
+	eval set -- $ops
+	while true; do
+		case $1 in
+			-D| --[Dd]aemon)daemon="true"; shift;;
+			-c| --config*) conf="$2"; shift 2;;
+			-h| --help) usage; shift;;
+			-o| --logfile) logfile="$2"; shift 2 ;;
+			--[fF]oreground) daemon="false"; shift ;;
+			--logdir) logdir="$2"; shift 2 ;;
+			--debug | -d) if [ -z "$2" ]; then debuglevel=2; else if [[ "$2" -ge 1 ]] && [[ "$2" -le 5 ]];then debuglevel="$2"; else echo "The debug level is set to $2, which is not between 1 and 5."; exit 1; fi; fi; shift 2;;
+			--)shift;break;;
+			*)echo "I do not recognize $i as an option, have a read...."; shift ;;
 
+		esac
+	done
+fi
 
-##getopts didn't work because of the lack of suppport for long names.
-#opts=$(getopts -o DFho:d::c: -l Daemon,daemon,help,output:,logfile:,foreground,debug::,logdir:,config:,configuration: -- $@)
-#eval set -- $opts
-#while 
-#	case $opt in
-#		D| [D,d][aemon])daemon="true";;
-#		c| config[uration,])conf="$2";;
-#		h| help)usage;;
-#		o| logfile)logfile="$2";;
-#		[f,F]oreground) daemon="false";;
-#		logdir) logdir="$2";;
-#		debug | d) if [ -n "$2" ]; then debuglevel=1; else if [ "$2" -ge 0 ] && [ "$2" -le 5 ];then debuglevel="$2"; fi ;else echo "The debug level is set to $2, which is not between 0 and 5."; exit 1; fi;;
-#		*)echo "I do not recognize $i as an option, have a read...."; usage;;
-#
-#	esac
-
-
+##Conf File
 if [ -z "$conf" ]; then
 	source ./configuration
 	cp ./configuration runningconf.cnf
@@ -80,31 +75,72 @@ else
 	fi
 fi
 
-
 ##Initial Cleanup
 rm -r "$ircdir/$server/"
 mkdir -p "$ircdir/$server/$owner/"
 touch "$ircdir/$server/$owner/out"
 
-if [ "$deamon" != "true" ]; then
-	if [ -z "$logfile" ]; then
-		exec > $logfile 2>&1
-	else
-		##logging
-		datetime=$(date +%d%m%y)
-		if [ -a $logdir/bot.log.$datetime ]; then
-			if [ -a $logdir/bot.log.$datetime.01 ]; then
-				number=$(expr "$(ls -t $logdir | head -n 1 | sed -e "s/^.*$datetime\.//")" "+" 1 )
-			else
-				number=1
-			fi
-			mv "$logdir/bot.log" "$logdir/bot.log.$datetime.$number"
+
+##Puttin the logfile away
+if [ -n "$logfile" ]; then
+	exec 1> $logfile
+else
+	##logging
+	datetime=$(date +%d%m%y)
+	if [ -a $logdir/bot.log.$datetime ]; then
+		if [ -a $logdir/bot.log.$datetime.01 ]; then
+			number=$(expr "$(ls -t $logdir | head -n 1 | sed -e "s/^.*$datetime\.//")" "+" 1 )
 		else
-			mv "$logdir/bot.log" "$logdir/bot.log.$datetime"
+			number=1
 		fi
-		exec > $logdir/bot.log 2>&1
+		mv "$logdir/bot.log" "$logdir/bot.log.$datetime.$number"
+	else
+		mv "$logdir/bot.log" "$logdir/bot.log.$datetime"
 	fi
+	exec 1> $logdir/bot.log
 fi
+
+##Setting the debug level
+echo $debuglevel
+##Because of who knows what, I can't do this with a for string. Looks like I have to manually set it.
+if [[ $debuglevel -ge 2 ]]; then
+	exec 2>&1
+	if [[ $debuglevel -ge 3 ]]; then
+		exec 3>&1
+		if [[ $debuglevel -ge 4 ]]; then
+			exec 4>&1
+			if [[ $debuglevel -ge 5 ]]; then
+				exec 5>&1
+			else
+				exec 5>/dev/null
+			fi
+		else
+			exec 4>/dev/null
+			exec 5>/dev/null
+		fi
+	else
+		exec 3>/dev/null
+		exec 4>/dev/null
+		exec 5>/dev/null
+	fi
+else
+	exec 2>/dev/null
+	exec 3>/dev/null
+	exec 4>/dev/null
+	exec 5>/dev/null
+fi
+
+##I need to figure out how to fix this
+#for i in $(echo -n `seq -s " " 2 $debuglevel`); do
+#	echo $i
+#	echo {$i}and
+#	exec `echo ${i/%/>&1}`
+#done
+#for i in $(echo -n `seq -s " " $(expr "$debuglevel" "+" 1) 5`); do
+#	echo $i
+#	echo {$i}and
+#	exec ${i/%/>/dev/null}
+#done
 
 
 trap control_c SIGINT
