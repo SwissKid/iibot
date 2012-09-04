@@ -1,8 +1,14 @@
 #!/bin/bash
+##
+##This is just a bunch of functions I wrote that I want called in other scripts,
+##so I'll source this file in those other scripts.
+
+##Send a message to the owner! Might as well keep this set.
 function msgowner() {
 echo "/privmsg $owner :$@" > "$ircdir/$server/in"
 }
 
+##Format search results nicely, I do this often enough it should be a function.
 function searchresults() {
 ##Will write it's own lines to tosay.txt unless tolde "self"
 lines=$(wc -l < searchresults.txt)
@@ -29,6 +35,8 @@ fi
 cat tosay.txt
 }
 
+
+##send private messages to the people! Also pretty common.
 function privmsg() {
 set -- $@
 name=$1
@@ -41,4 +49,55 @@ function commandme(){
 	channel=$@
 	echo "./commandme $channel  > "$ircdir/$server/$channel/in"" 
 	./commandme $channel  > "$ircdir/$server/$channel/in"
+}
+
+##Because tput could be made nicer for what I'm doing!
+function maketext(){
+if tput init; then
+	set -- $@
+	if [ -z "$2" ]; then
+		style=$1
+		case "$style" in
+			bold) tput bold;;
+			normal | reset | standard | none| end) tput sgr0;;
+			blue)  tput setf 1;;
+			green) tput setf 2;;
+			cyan)  tput setf 3;;
+			red)   tput setf 4;;
+			purple)tput setf 5;;
+			brown) tput setf 6;;
+			white) tput setf 7;;
+			black) tput setf 8;;
+			underline | under) tput smul;;
+		esac
+	elif [ "$2" == 'on' ]; then
+		color1=$1
+		color2=$3
+		case "$color1" in
+			bold) tput bold;;
+			normal | reset | standard | none| end) tput sgr0;;
+			blue)  tput setf 1;;
+			green) tput setf 2;;
+			cyan)  tput setf 3;;
+			red)   tput setf 4;;
+			purple)tput setf 5;;
+			brown) tput setf 6;;
+			white) tput setf 7;;
+			black) tput setf 8;;
+			underline | under) tput smul;;
+		esac
+		case "$color2" in
+			blue)  tput setb 1;;
+			green) tput setb 2;;
+			cyan)  tput setb 3;;
+			red)   tput setb 4;;
+			purple)tput setb 5;;
+			brown) tput setb 6;;
+			white) tput setb 7;;
+			black) tput setb 8;;
+		esac
+	else
+		echo "You broke tput" >&2
+	fi
+fi
 }

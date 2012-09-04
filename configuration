@@ -1,6 +1,10 @@
 #/bin/bash
 ##This file is a configuration file, sourced in almost every other script.
 # Once I'm good at this, this is the only file you should have to modify.
+##
+# Technically, now that I've learned how export works, I don't have to call
+# configuration in any but the first file. It'll probably stay in quite a few
+# for a while until I get through modifying files.
 
 export owner="swiss"
 export nick="swissboxbot"
