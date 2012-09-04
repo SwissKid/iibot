@@ -2,22 +2,21 @@
 ##This script will open a private listening channel with the person requesting it.
 ##This is for special listening for those who don't want to fill a channel.
 truenick=$1
-. runningconf.cnf
-. functions
-if [ "$@" == 'clear' ]; then
-	if [ -d "$ircdir/$server/$truenick/" ]; then
-		rm -r $ircdir/$server/$truenick
-		echo "$truenick's query has been reset."
-	else
-		echo "$truenick's query cannot be found. Try starting one with simply !listen."
+shift
+source functions
+echo "Privlisten with $truenick initiated" >&3
+. ./functions
+if [ -z "$@" ]; then
+	if [ -e "in/$truenick" ] && [ "$(cat in/$truenick)" == "true" ]; then
+		echo "$truenick is trying to start 2 queries!" >&3
+		echo "false" > "in/$truenick"
+		sleep 5
 	fi
-	exit 0
-elif [ -n "$@" ]; then
 	if [ -d "$ircdir/$server/$truenick/" ]; then
 		if [ -a "$ircdir/$server/$trueick/in" ] && [ -a "$ircdir/$server/$trueick/out" ]; then
-			hour=$(expr `date %k` + 1)
-			minute=$(date %M)
-			./commandme $truenick &
+			hour=$(expr `date +%k` + 1)
+			minute=$(date +%M)
+			commandme $truenick &
 			echo "Now listening until $hour:$minute" >> "$ircdir/$server/$truenick/in"
 		else
 			rm -r "$ircdir/$server/$truenick" 
@@ -27,21 +26,32 @@ elif [ -n "$@" ]; then
 		privmsg $truenick "Please message back 'yes' within 10 seconds to begin a query with me."
 		timeout=1
 		while [ "$timeout" -le 11 ];do
-			if [ -a "$ircdir/$server/$trueick/in" ] && [ -a "$ircdir/$server/$trueick/out" ]; then
-				hour=$(expr `date %k` + 1)
-				minute=$(date %M)
-				./commandme $truenick &
+			if [ -e "$ircdir/$server/$trueick/in" ] && [ -e "$ircdir/$server/$trueick/out" ]; then
+				hour=$(expr `date +%k` + 1)
+				minute=$(date +%M)
+				commandme $truenick &
+				echo "$!" > "pid/$truenick"
 				echo "Now listening until $hour:$minute" >> "$ircdir/$server/$truenick/in"
+				timequit 3600 "pid/$truenick"
 				exit 0
 			else
+				echo "Timout $timeout" >&3
 				timeout=$(expr $timeout "+" 1)
 				sleep 1
 			fi
 		done
 		if [ "$timeout" -ge 11 ]; then
-			privmsg $truenick "You seem to have taken too long, or I have a bug."
+			privmsg $truenick "You seem to have taken too long, or I have a bug. Try again!"
 		fi
 	fi
+elif [ "$@" == 'clear' ]; then
+	if [ -d "$ircdir/$server/$truenick/" ]; then
+		rm -r $ircdir/$server/$truenick
+		echo "$truenick's query has been reset."
+	else
+		echo "$truenick's query cannot be found. Try starting one with simply !listen."
+	fi
+	exit 0
 else 
 	echo "I'm sorry, I don't understand what you mean by \"$@\""
 fi

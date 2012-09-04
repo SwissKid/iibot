@@ -47,9 +47,32 @@ echo "/privmsg $name :$@" > "$ircdir/$server/in"
 
 function commandme(){
 	channel=$@
-	echo "./commandme $channel  > "$ircdir/$server/$channel/in"" 
+	echo "./commandme $channel  > "$ircdir/$server/$channel/in"" >&3
 	./commandme $channel  > "$ircdir/$server/$channel/in"
 }
+
+
+function timekill(){
+set -- $@
+timesleep=$1
+shift
+tokill=$@
+echo "Killing $@ in $timesleep seconds." >&3
+sleep $timesleep
+kill -9 `cat $tokill`
+}
+
+function timequit(){
+set -- $@
+timesleep=$1
+shift
+toquit=$@
+echo "echoing false into in/$@ in $timesleep seconds." >&3
+sleep $timesleep
+echo 'false' > "in/$toquit"
+echo "echoing false into in/$toquit now" >&3
+}
+
 
 ##Because tput could be made nicer for what I'm doing!
 function maketext(){

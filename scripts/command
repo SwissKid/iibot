@@ -13,6 +13,7 @@ restlower=$(echo $rest | tr [:upper:] [:lower:])
 
 
 function allowcheck() {
+echo "Allowcheck on $swissbox by $truenick" >3&
 if [ "$(echo $channel | head -c 1)" == '#' ];then
 	allowed=$(cat "./allow/$channel")
 else 
@@ -76,8 +77,9 @@ elif [ "$command" == 'bannedwords' ]; then
 elif [ "$command" == 'allow' ] || [ "$command" == 'deny' ] ; then
 	./scripts/allow $channel $truenick $command $rest
 
-
-
 elif [ "$command" == 'query' ]; then
-	./scripts/privlisten $truenick
+	./scripts/privlisten $truenick $msg
+else
+	echo "Command not recognized. Try !help?"
+	echo "$truenick used incorrect command of $command with $rest" >3&
 fi
