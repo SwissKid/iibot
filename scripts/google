@@ -18,9 +18,9 @@ if [[ "$rest" == *$i* ]]; then
 	exit 0
 fi
 done
-curl -s --get --data-urlencode "q=$rest" http://ajax.googleapis.com/ajax/services/search/web?v=1.0 > googleresults
-webaddr=$(sed 's/"unescapedUrl":"\([^"]*\).*/\1/;s/.*GwebSearch",//' < googleresults)
-title=$( sed -e 's/"titleNoFormatting":"\([^"]*\).*/\1/;s/.*",//' < googleresults)
+curl -s --get --data-urlencode "q=$rest" http://ajax.googleapis.com/ajax/services/search/web?v=1.0 > texts/googleresults.txt
+webaddr=$(sed 's/"unescapedUrl":"\([^"]*\).*/\1/;s/.*GwebSearch",//' < texts/googleresults.txt)
+title=$( sed -e 's/"titleNoFormatting":"\([^"]*\).*/\1/;s/.*",//' < texts/googleresults.txt)
 if [[ "$title" == *403}$ ]]; then
 	echo "Sorry, looks like google has me in Time Out!"
 	./scripts/timeout googletimeout &
