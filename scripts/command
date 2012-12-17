@@ -8,12 +8,12 @@ commandold=$1
 entire=$@
 shift
 rest=$@
-command=$(echo $commandold | tr [:upper:] [:lower:])
-restlower=$(echo $rest | tr [:upper:] [:lower:])
+command=${commandold,,}
 
 
 function allowcheck() {
-if [ "$(echo $channel | head -c 1)" == '#' ];then
+echo "Allowcheck on $swissbox by $truenick" >3&
+if [ "${channel:0:1}" == '#' ];then
 	allowed=$(cat "./allow/$channel")
 else 
 	allowed=$(cat "./allow/priv")
@@ -28,14 +28,18 @@ fi
 #
 #fi
 
+##IDEA
+#ownercheck function, to check if current nick is the owner, easier to do than if statements.
+
+
 
 #lets start with help
 if [ "$command" == 'help' ]; then
-	./scripts/help $truenick $restlower
+	./scripts/help $truenick ${rest,,}
 ##main search ( swissbox
 elif [ "$command" == 'search' ]; then 
 	allowcheck swissbox
-	./scripts/search $rest 
+	./scripts/search """$rest"""
 elif [ "$command" == 'manga' ] ; then
 	allowcheck swissbox
 	./scripts/manga $rest
@@ -45,7 +49,7 @@ elif [ "$command" == 'lastchap' ] ; then
 #latest modified
 elif [ "$command" == 'latest' ]; then 
 	allowcheck swissbox
-	./scripts/latest $restlower
+	./scripts/latest ${rest,,}
 ##lets try a request system
 elif [ "$command" == 'request' ] ; then
 	allowcheck swissbox
@@ -76,8 +80,9 @@ elif [ "$command" == 'bannedwords' ]; then
 elif [ "$command" == 'allow' ] || [ "$command" == 'deny' ] ; then
 	./scripts/allow $channel $truenick $command $rest
 
-
-
 elif [ "$command" == 'query' ]; then
-	./scripts/privlisten $truenick
+	./scripts/privlisten $truenick $msg
+else
+	echo "Command not recognized. Try !help?"
+	echo "$truenick used incorrect command of $command with $rest" >3&
 fi

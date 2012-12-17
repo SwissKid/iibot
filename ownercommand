@@ -1,48 +1,44 @@
 #!/bin/bash
+##Ownercommand (base dir)
 msg=$@
-source ./configuration
 source ./functions
 set -- $msg
-i=$1
+command=${1,,}
 shift
 channel=$1
 shift
 message=$@
-if [ "$(echo $i | head -c 1)" == '!' ]; then
+if [ "${command:0:1}" == '!' ]; then
 #if the commands start with ! then they're seperated!
 	msgowner `./scripts/ownercommand $msg`
-
-
 else
-	command=$(echo $i | tr [:upper:] [:lower:])
-	echo "Master wants me to $command $channel and $message"
-	if [ "$(echo $channel | head -c 1)" != "#" ]; then
-		echo $channel
-		newchannel=$(echo "#""$channel")
+	echo "$0 -- Master wants me to $command $channel and $message" >&3
+	if [ "${channel:0:1}" != "#" ]; then
+		newchannel=${channel/^/#}
 		channel="$newchannel"
-		echo $newchannel
 	fi
 ##Commands (perhaps I should seperate this)
 	#Join
 	if [ "$command" == 'j' ] || [ "$command" == 'join' ]; then
-		echo "/j $channel"
+		echo "$0 -- /j $channel" >&3
 		echo "/j $channel" > "$ircdir/$server/in"
 		echo "true" > "./in/$channel"
 		sleep 1
-		commandme $channel&
+		commandme $channel &
 		msgowner "Joining $channel"
 	#Speak
 	elif [ "$command" == 'say' ] ; then
-		echo "/privmsg $channel :$message"
+		echo "$0 -- /privmsg $channel :$message" >&3
 		echo "/privmsg $channel :$message" > "$ircdir/$server/in"
 
 	#Part
 	elif [ "$command" == 'q' ] || [ "$command" == 'part' ] || [ "$command" == 'p' ]; then
-		echo "$msg"
+		echo "$msg" >&3
 		msgowner "Parting $channel with message $message"
-		echo -e "/part $channel :\"$message\"" 
+		echo -e "$0 -- /part $channel :\"$message\"" >&3
 		echo -e "/part $channel :\"$message\"" > "$ircdir/$server/in"
 		echo "false" > "in/$channel"
+		echo "echoing false into in/$channel" >&3
 		
 
 	#	#Quit  -- not yet functional

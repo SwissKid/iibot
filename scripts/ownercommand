@@ -1,11 +1,12 @@
 #!/bin/bash
-set -- $@
 command=$1
 shift
 rest=$@
-. runningconf.cnf
 . functions
-truecommand=$(echo $command | sed -e 's/^!//'| tr [:upper:] [:lower:] )
+truecommand=$(echo ${command:0:1} | tr [:upper:] [:lower:] )
 if [ "$truecommand" == 'bannedwords' ] ; then
 	./scripts/banword $owner $@
+	echo "$0 --$@ executed to bannedwords by $owner." >&3
+else
+	echo "$0 -- $truecommand is illegal" >&2
 fi
