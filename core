@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #iibot/core
 ##Seperating this in order to make logging possibly possible. This seems like a really stupid way to do it though...
 ##I also need to figure out how to kill the bot when it's running like this.

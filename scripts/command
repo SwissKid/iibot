@@ -39,7 +39,7 @@ if [ "$command" == 'help' ]; then
 ##main search ( swissbox
 elif [ "$command" == 'search' ]; then 
 	allowcheck swissbox
-	./scripts/search $rest 
+	./scripts/search """$rest"""
 elif [ "$command" == 'manga' ] ; then
 	allowcheck swissbox
 	./scripts/manga $rest

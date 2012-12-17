@@ -10,38 +10,36 @@ echo "/privmsg $owner :$@" > "$ircdir/$server/in"
 
 ##Format search results nicely, I do this often enough it should be a function.
 function searchresults() {
-##Will write it's own lines to tosay.txt unless tolde "self"
-lines=$(wc -l < searchresults.txt)
-if [ "$lines" == "1" ]; then
-	if [ "$@" != "self" ]; then
-		echo -n "The only result is: " > tosay.txt
+	##Will write it's own lines to tosay.txt unless told "self"
+	lines=$(wc -l < results/searchresults.txt)
+	if [ "$lines" == "1" ]; then
+		echo "One Line" >&3
+		[[ ! -z "$@" ]] && [[ "$@" != "self" ]] && echo -n "The only result is: " > tosay.txt
+		echo " $(cat results/searchresults.txt)." >> tosay.txt
+	else
+		echo "$lines Lines" >&3
+		[ "$@" != "self" ] && echo "The found files are: " > tosay.txt
+		n=2
+		cat results/searchresults.txt | while read line; do
+			if [ "$n" -le "$lines" ]; then
+				echo -n "$line, " >> tosay.txt
+				n=`expr $n + 1`;
+			else
+				echo "and $line." >> tosay.txt
+				n=`expr $n + 1`;
+			fi
+		done
 	fi
-	echo " $(cat searchresults.txt)." >> tosay.txt
-else
-	if [ "$@" != "self" ]; then
-		echo -n "The found files are: " > tosay.txt
-	fi
-	n=2
-	cat searchresults.txt | while read line; do
-		if [ "$n" -le "$lines" ]; then
-			echo -n "$line, " >> tosay.txt
-			n=`expr $n + 1`;
-		else
-			echo "and $line." >> tosay.txt
-			n=`expr $n + 1`;
-		fi
-	done
-fi
-cat tosay.txt
+	cat tosay.txt
 }
 
 
 ##send private messages to the people! Also pretty common.
 function privmsg() {
-set -- $@
-name=$1
-shift
-echo "/privmsg $name :$@" > "$ircdir/$server/in"
+	set -- $@
+	name=$1
+	shift
+	echo "/privmsg $name :$@" > "$ircdir/$server/in"
 }
 
 

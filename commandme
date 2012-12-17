@@ -20,7 +20,7 @@ tailf -n1 "$ircdir/$server/$channel/out" |\
 	fi
 	if [ -z "$date" ]; then
 		echo "Waiting" >&3
-	elif [ "$(echo $channel | head -c 1)" == '#' ]; then
+	elif [ "${channel:0:1}" == '#' ]; then
 		if [[ "$msg" == swissboxbot:* ]]; then
 			./scripts/saymyname $channel $truenick $msg
 			echo "$0 -- $date $time $nick $msg" >&4
