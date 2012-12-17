@@ -1,34 +1,25 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#############################################################
+# Written By Swiss for iiBot
+# Searches the system, Returns results
+#
+#
+# swiss <swiss@veryoblivio.us>
+#############################################################
 . functions
 . runningconf.cnf
-#filesgrep=$(ls /home/sftp/files/anime/ | grep -i $1)
-#hotswapgrep=$(ls /home/sftp/mount/hotswap/anime/ | grep -i $1)
-
-##Removed filesgrep and hotswap as I have migrated to the 3tb drive
-ls /home/sftp/mount/hdd2/anime/ | grep -i $1 > searchresults.txt
-linenumber=$(wc -l < searchresults.txt)
+ls $filesdir/anime/ | grep -i "$@" > results/searchresults.txt
+linenumber=$(wc -l < results/searchresults.txt)
 if [ "$linenumber" == '0' ]; then
 	echo "No files found"
 	exit 0
 elif [ "$linenumber" != 1 ]; then
-	echo "There were $linenumber files found"
 	if [ $linenumber -le 5 ]; then
-		searchresults 
-##		while [ $n -le $linenumber ]
-##		do
-##			line=$(echo "$hdd2grep" | sed -n "$n"p)
-##			if [ "$n" -lt "$linenumber" ];
-##			 then
-##				echo -n "$line, ";
-##			 else
-##				echo "$line."
-##			fi
-##			n=`expr $n + 1`;
-##		done
+		results=$(searchresults self )
 	else
-		echo "That's way too many to display nicely. Please refine your search terms."
+		results="That's way too many to display nicely. Please refine your search terms."
 	fi
+	echo "There were $linenumber files found: $results"
 else
-	echo "There was one file found."
-	searchresults
+	echo -e "There was one file found. Its is: $(searchresults self)"
 fi

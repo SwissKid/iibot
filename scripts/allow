@@ -1,4 +1,20 @@
 #!/bin/bash
+#######################################################
+#
+# A Script to modify access lists for iibot by Swiss
+#
+# Just basically checks the person who asked, if it's
+# the owner, then continue, otherwise, screwit
+#
+#
+#
+#
+#
+#
+#
+#
+# swiss <swiss@veryoblvio.us>
+#######################################################
 set -- $@
 channel=$1
 shift

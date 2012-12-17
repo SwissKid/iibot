@@ -1,19 +1,17 @@
 #!/bin/bash
-source runningconf.cnf
 msg=$@
 set -- $msg
 channel=$1
 shift
 truenick=$1
 shift
-name=$1
-shift
-rest=$@
+rest=${@#swissboxbot:}
 words=$(echo $rest | tr [:upper:] [:lower:])
-if [ "$(echo $words | head -c 1)" == '!' ]; then
-	command=$(echo $rest | sed -e 's/^!//')
+if [ "${words:0:1}" == '!' ]; then
+	command=${rest:1}
 	./scripts/command $channel $truenick $command
-else
+	echo "./scripts/command $channel $truenick $command" >&3
+elif [ "$channel" != "$truenick" ]; then
 	if [[ "$rest" == *RAGE* ]] ; then
 		echo "RAAAAAAAAAAAAAAAAAAAAGE"
 	fi

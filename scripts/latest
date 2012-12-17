@@ -1,10 +1,28 @@
 #!/bin/bash
+#########################################################################
+# Latest
+#
+# This is a bash script written for use with iibot.
+# It checks for the modified files in a directory, and displays them.
+#
+#
+#
+#
+#
+#
+#
+#
+# Written by:
+#
+# swiss <swiss@veryoblivio.us>
+#
+#########################################################################
 set -- $@
 number=$1
 shift
 amount=$1
 shift
-type=$1
+typemedia=$1
 . runningconf.cnf
 . functions
 
@@ -14,47 +32,51 @@ function toobig() {
 }
 
 
-
+echo "checking last $number of $amount in $typemedia" >&2
 if [ "$amount" == "days" ] || [ "$amount" == "day" ]; then
 	if [ "$number" -le 11 ]; then
-		find $filesdir/$type/ -maxdepth 1 -mtime -"$number" -printf "%f \n" > searchresults.txt
-		sed -ie 1d searchresults.txt
+		find $filesdir/$typemedia/ -maxdepth 1 -mtime -"$number" -printf "%f \n" > results/searchresults.txt
+		sed -ie 1d results/searchresults.txt
 	else
 		toobig
 	fi
 elif [ "$amount" == "hours" ]; then
 	if [ "$number" -le 30 ]; then
 		time=$(expr $number "*" 60)
-		find $filesdir/$type/ -maxdepth 1 -mmin -"$time" -printf '%f \n' > searchresults.txt
-		sed -ie 1d searchresults.txt
+		find $filesdir/$typemedia/ -maxdepth 1 -mmin -"$time" -printf '%f \n' > results/searchresults.txt
+		sed -ie 1d results/searchresults.txt
 	else
 		toobig
 	fi
 elif [ "$amount" == "minutes" ]; then
 	if [ "$number" -le 120 ]; then
-		find $filesdir/$type/ -maxdepth 1 -mmin -"$number" > searchresults.txt
-		sed -ie 1d searchresults.txt
+		find $filesdir/$typemedia/ -maxdepth 1 -mmin -"$number" > results/searchresults.txt
+		sed -ie 1d results/searchresults.txt
 	else
 		toobig
 	fi
 elif [ "$amount" == "files" ]; then
 	if [ "$number" -le 5 ]; then
-		ls -t $filesdir/$type/ | head -n 5 > searchresults.txt
+		echo "ls -t -c1 $filesdir/$typemedia/ | head -n 5 > results/searchresults.txt" >&4
+		ls -t -c1 $filesdir/$typemedia/ | head -n 5 > results/searchresults.txt
 	else
 		toobig
 	fi
 else
 	echo "I don't recognize that unit of measurement. Please use days, hours, or minutes."
+	exit 1
 fi
 
-lines=$(wc -l < searchresults.txt)
+lines=$(wc -l < results/searchresults.txt)
 if [ "$lines" -ge 6 ]; then
 	echo "I'm sorry, there are more than 5 results, please reduce the amount of time."
+elif [ "$lines" == "0" ] ; then
+		echo "There were no $typemedia files modified in the last $number $amount. "
 else
 	if [ "$amount" == "files" ]; then
-		echo -n "The $number most recently modified files in $type are: " > tosay.txt
+		echo "The $number most recently modified files in $typemedia are: " > tosay.txt
 	else
-		echo -n "The $type files modified in the last $number $amount are: " > tosay.txt
+		echo "The $typemedia files modified in the last $number $amount are: " > tosay.txt
 	fi
 	searchresults self
 fi

@@ -2,7 +2,6 @@
 ops=$(getopt -q -o DFho:d::c: -l Daemon,daemon,help,output:,logfile:,foreground,debug::,logdir:,config:,configuration: -- "$@")
 export ops
 source ./functions
-
 function usage() {
 ##Help message
 source ./configuration
@@ -15,8 +14,8 @@ OPTIONS:
 		Show this help
 		
 	$(maketext bold)-d$(maketext reset) or $(maketext bold)--debug$(maketext reset) (number)
-		Change debugging level. 1 only logs stdout, 2 logs stderr 3 logs
-			additional info, and 4 and 5 make you feel good.
+		Change debugging level. 1 logs just about nothing, 2 logs stderr 3 logs
+			additional info, and 4 and 5 make you feel good/fill your HDD.
 		$(maketext bold)Default: Level 2 $(maketext reset)
 	$(maketext bold)-D$(maketext reset) or $(maketext bold)--Daemon$(maketext reset)
 		Run the bot as a Daemon. This is jenky right now, I suggest you just add
@@ -47,23 +46,22 @@ if [ "$ops" ]; then
 	eval set -- $ops
 	while true; do
 		case $1 in
-			-D| --[Dd]aemon)daemon="true"; shift;;
+			-D| --[Dd]aemon)daemon="true";echo "Daemon mode enabled"; shift;;
 			-c| --config*) conf="$2"; shift 2;;
 			-h| --help) usage; shift;;
 			-o| --logfile) logfile="$2"; shift 2 ;;
-			--[fF]oreground) daemon="false"; shift ;;
+			-F| --[fF]oreground) daemon="false"; shift ;;
 			--logdir) logdir="$2"; shift 2 ;;
 			--debug | -d) if [ -z "$2" ]; then debuglevel=2; else if [[ "$2" -ge 1 ]] && [[ "$2" -le 5 ]];then debuglevel="$2"; else echo "The debug level is set to $2, which is not between 1 and 5."; exit 1; fi; fi; shift 2;;
 			--)shift;break;;
-			*)echo "I do not recognize $i as an option, have a read...."; shift ;;
+			*)echo "I do not recognize $i as an option, have a read...."; usage; shift ;;
 
 		esac
 	done
 fi
-
+export debuglevel
 ##Conf File
 if [ -z "$conf" ]; then
-	source ./configuration
 	cp ./configuration runningconf.cnf
 else
 	if [ -a "$conf" ]; then
@@ -74,15 +72,11 @@ else
 		exit 1
 	fi
 fi
-
+echo "Loading configuration..."
+source ./runningconf.cnf
 
 ##Puttin the logfile away
-if [ -n "$logfile" ]; then
-	if [ "$daemon" == 'false' ]; then exec 1>&1 | tee $logfile;
-	else
-	exec 1> $logfile
-	fi
-else
+if [ -z "$logfile" ]; then
 	##logging
 	datetime=$(date +%d%m%y)
 	if [ -a $logdir/bot.log.$datetime ]; then
@@ -92,43 +86,12 @@ else
 			number=1
 		fi
 		mv "$logdir/bot.log" "$logdir/bot.log.$datetime.$number"
-	else
+	elif [ -a "$logdir/bot.log" ]; then
 		mv "$logdir/bot.log" "$logdir/bot.log.$datetime"
 	fi
-	if [ "$daemon" == 'false' ]; then exec 1>&1 | tee $logdir/bot.log; else 
-	exec 1> $logdir/bot.log
-	fi
+	logfile="$logdir/bot.log"
 fi
 
-##Setting the debug level
-echo $debuglevel
-##Because of who knows what, I can't do this with a for string. Looks like I have to manually set it.
-if [[ $debuglevel -ge 2 ]]; then
-	exec 2>&1
-	if [[ $debuglevel -ge 3 ]]; then
-		exec 3>&1
-		if [[ $debuglevel -ge 4 ]]; then
-			exec 4>&1
-			if [[ $debuglevel -ge 5 ]]; then
-				exec 5>&1
-			else
-				exec 5>/dev/null
-			fi
-		else
-			exec 4>/dev/null
-			exec 5>/dev/null
-		fi
-	else
-		exec 3>/dev/null
-		exec 4>/dev/null
-		exec 5>/dev/null
-	fi
-else
-	exec 2>/dev/null
-	exec 3>/dev/null
-	exec 4>/dev/null
-	exec 5>/dev/null
-fi
 
 ##I need to figure out how to fix this
 #for i in $(echo -n `seq -s " " 2 $debuglevel`); do
@@ -142,52 +105,16 @@ fi
 #	exec ${i/%/>/dev/null}
 #done
 
-
-
-##Initial Cleanup
-rm -r "$ircdir/$server/"
-mkdir -p "$ircdir/$server/$owner/"
-touch "$ircdir/$server/$owner/out"
-
-
-trap control_c SIGINT
-#ctrl-c inttrupt
-function control_c() {
-	echo -e "quitting\n"
-	rm -r $ircdir/$server/*
-	mkdir $ircdir/$server/$owner/
-	touch $ircdir/$server/$owner/out
-	kill -9 "$iipid"
-	run=false
-	exit 0
-	}
-
-#command grabbing
-
-function ownermessage(){
-	tailf -n1 "$ircdir/$server/$owner/out" | while read -r date time nick msg; do
-		$iidir/ownercommand $msg
-	done 
-}
-
-
-
-while true; do 
-	$iidir/ii -s $server -n $nick -f "Iamabot" -i $ircdir &
-	iipid="$!"
-	sleep 3
-	##you'll have to put your own command to identify with nickserv here, you can't have my pass
-	for i in $initchannel; do
-		echo "/j $i" > "$ircdir/$server/in"
-		sleep 1
-		commandme $i &
-	done
-	msgowner "I AM READY"
-	ownermessage &
-	./register
-	wait "$iipid"
-done 
-
-
-
-
+##Due to the fact the core had to be seperated for logging, the
+##core is executed here.
+source ./core
+echo "Starting Logging"
+if [ "$daemon" == "true" ]; then
+	echo "sorry, but Daemonization is a bit quirky right now, so it's disabled. Feel free to background it yourself."
+	startii > $logfile
+##When daemonized I haven't found a clean way to quit yet. This is a serious issue.
+#	startii > $logfile &
+#	echo "$!" > corepid
+else
+	startii | tee $logfile
+fi
