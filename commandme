@@ -1,17 +1,13 @@
 #!/bin/bash
 echo "$0 executing with $@" >&3
-channel=$@
-source functions
+export channel=$@
+. functions
 echo > "$ircdir/$server/$channel/out"
 joined=true
 echo "true" > "in/$channel"
-tailf -n1 "$ircdir/$server/$channel/out" |\
- while read -r date time nick msg; do
-	set -- $msg
-	start=$1
-	shift
-	rest=$@
-	truenick=${nick:1:-1}
+tailf -n1 "$ircdir/$server/$channel/out" | while read -r date time nick msg; do
+	export rest=$msg
+	export truenick=${nick:1:-1}
 	joined=$(tail -n1 "in/$channel")
 	if [ "$joined" == "false" ]; then
 		echo "in/$channel came out as false, exiting" >&3
@@ -23,13 +19,13 @@ tailf -n1 "$ircdir/$server/$channel/out" |\
 	elif [ "${channel:0:1}" == '#' ]; then
 		if [[ "$msg" == swissboxbot:* ]]; then
 			./scripts/saymyname $channel $truenick $msg
-			echo "$0 -- $date $time $nick $msg" >&4
+			echo " sent to saymyname $0 -- $date $time $nick $msg" >&4
 		fi
 	elif [ "$truenick" == "$channel" ]; then
 		echo "$0 -- In a privmsg, was messaged $msg from $nick" >&3
 		./scripts/saymyname $channel $truenick $msg 
 	else
-		msgowner $channel and $truenick are giving me issues!
+		msgowner "$channel and $truenick are giving me issues!"
 		echo "$0 -- $channel and $truenick and $msg caused errors in commandme, quitting" >&2
 		echo "$0 -- the line is $date $time $nick $msg" >&3
 		exit 1

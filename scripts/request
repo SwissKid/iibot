@@ -1,32 +1,23 @@
 #!/bin/bash
 truenick=$1
-shift
-command=$(echo $1 | tr [:upper:] [:lower:])
-shift
-type=$(echo $1 | tr [:upper:] [:lower:])
-shift
-rest=$@
-. runningconf.cnf
-. functions
 
-
-if [ "$type" != 'anime' ] && [ "$type" != 'manga' ]; then
+if [ "$subcommand" != 'anime' ] && [ "$subcommand" != 'manga' ]; then
 	privmsg $truenick "I'm sorry, i only have an anime or manga list"
 	exit 0
 fi
 
 if [ "$command" == 'add' ]; then 
-	search=$(grep -i "$rest" ./request/$type)
+	search=$(grep -i "$subquery" ./request/$subcommand)
 	if [ "$search" != "" ] ; then
 		privmsg $truenick "Sorry, this item has already been requested!"
 	else
-		echo "$truenick:	$rest" >> "./request/$type"
-		echo "$truenick: Your request for $rest has been added!"
+		echo "$truenick:	$subquery" >> "./request/$subcommand"
+		echo "$truenick: Your request for $subquery has been added!"
 	fi
 elif [ "$command" == 'search' ]; then 
-	search=$(grep -i "$rest" ./request/$type)
+	search=$(grep -i "$subquery" ./request/$subcommand)
 	if [ "$search" != "" ] ; then
-		grep -i "$rest" ./request/$type | while read line; do
+		grep -i "$subquery" ./request/$subcommand | while read line; do
 			reqnick=$(echo $line | sed -e 's/:.*$//')
 			show=$(echo $line | sed -e 's/^.*://')
 		echo "$show is requested by $reqnick"
@@ -35,27 +26,27 @@ elif [ "$command" == 'search' ]; then
 		echo "This item doesn't seem to be in the list!"
 	fi
 elif [ "$command" == 'list' ]; then
-	cat "./request/$type" | while read line; do
+	cat "./request/$subcommand" | while read line; do
 		privmsg $truenick "$line"
 	done
 elif [ "$command" == 'remove' ]; then 
-	removal=$(grep -i "$rest" ./request/$type)
+	removal=$(grep -i "$subquery" ./request/$subcommand)
 	if [ "$removal" == "" ]; then
 		privmsg $truenick "I can't find that on the list!"
 	else
 		reqnick=$(echo $removal | sed -e 's/:.*$//')
-		if [[ "$reqnick" == *"$rest"* ]]; then
+		if [[ "$reqnick" == *"$subquery"* ]]; then
 			privmsg $truenick "Are you really trying to remove all of $reqnick's requests? I can't let you do that"
 			exit 0
 		else
-			sed -ie "s/$removal//" "./request/$type"
+			sed -ie "s/$removal//" "./request/$subcommand"
 			privmsg $truenick "Removed $removal"
 			show=$(echo $removal | sed -e 's/*.*://')
 			privmsg '#swissbox' "$truenick has removed $show! Sounds likes $reqnick's request got fulfilled!"
 		fi
 	fi
 elif [ "$command" == 'show' ]; then
-	grep $rest "./request/$type" | while read line; do
+	grep $subquery "./request/$subcommand" | while read line; do
 		privmsg $truenick "$line"
 	done
 else 

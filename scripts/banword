@@ -1,27 +1,15 @@
 #!/bin/bash
-set -- $@
-truenick=$1
-shift
-command=$1
-shift
-rest=$@
-. runningconf.cnf
-function msgowner() {
-echo "/privmsg $owner :$@" > "$ircdir/$server/in"
-}
-
-
 if [ "$truenick" == "$owner" ]; then
-	if [ "$command" == "list" ]; then
-		cat ./bannedwords | while read line; do
+	if [ "$subcommand" == "list" ]; then
+		cat ./private/bannedwords | while read line; do
 			msgowner $line;
 		done
-	elif [ "$command" == "add" ]; then
-		echo $rest >> ./bannedwords
-		msgowner Added $rest
-	elif [ "$command" == 'remove' ]; then
-		sed -ie "s/$rest//g" ./bannedwords
-		msgowner removed $rest
+	elif [ "$subcommand" == "add" ]; then
+		echo $subquery >> ./private/bannedwords
+		msgowner Added $subquery
+	elif [ "$subcommand" == 'remove' ]; then
+		sed -ie "s/$subquery//g" ./private/bannedwords
+		msgowner removed $subquery
 	else
 		msgowner "The only commands I know are add remove and list!"
 	fi		

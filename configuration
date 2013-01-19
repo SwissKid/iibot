@@ -9,7 +9,7 @@
 export owner="swiss"
 export nick="swissboxbot"
 export server="irc.freenode.net"
-export initchannel="#swisstest"
+export initchannel="##swisstest"
 export ircdir="/home/swiss/testing"
 export iidir="/home/swiss/gits/iibot"
 export filesdir="/home/sftp/mount/hdd2"

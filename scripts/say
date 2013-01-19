@@ -1,15 +1,8 @@
 #!/bin/bash
-. runningconf.cnf
-set -- $@
-truenick=$1
-shift
-rest=$@
-
-
 if [ "$truenick" == "$owner" ]; then
-	echo "$rest"
+	echo "$query"
 else
-	if [ "$rest" == "" ]; then
+	if [ "$query" == "" ]; then
 		echo "Oh, you don't have anything for my to say?"
 	else
 		response=$[ ($RANDOM % 6 ) + 1 ]
@@ -24,7 +17,7 @@ else
 		elif [ "$response" == 4 ]; then
 			echo "I'd so it for some people, but no way would I do it for you $truenick"
 		elif [ "$response" == 5 ]; then
-			answer=$(echo $msg | rev)
+			answer=$(echo $query | rev)
 			echo "$answer"
 		elif [ "$response" == 6 ]; then
 			echo "If only I had ops....."

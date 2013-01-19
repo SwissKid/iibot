@@ -1,12 +1,11 @@
 #!/bin/bash
-rest=$@	
 ##Fixing the fact that it's named unintuitively
-if [ "$rest" == 'hdd1' ]; then
+if [ "$query" == 'hdd1' ]; then
 		rest="/dev/sdb4"
 fi
 	
-if df -h | grep $rest; then 
-	set -- $(df -h | grep $rest)
+if df -h | grep $query; then 
+	set -- $(df -h | grep $query)
 	filesystem=$1
 	size=$2
 	availible=$4

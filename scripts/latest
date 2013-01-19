@@ -17,14 +17,12 @@
 # swiss <swiss@veryoblivio.us>
 #
 #########################################################################
-set -- $@
+set -- $query
 number=$1
 shift
 amount=$1
 shift
 typemedia=$1
-. runningconf.cnf
-. functions
 
 function toobig() {
 	echo "I'm sorry, $number of $amount is a ridiculous number. Please choose something better."

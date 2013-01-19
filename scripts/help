@@ -1,12 +1,6 @@
 #!/bin/bash
 ##This should be a help script, hopefully it works nicely.
-. functions
-. runningconf.cnf
-truenick=$1
-shift
-topic=$@
-
-help/basiccommands $@ | while read line; do
+help/basiccommands $query | while read line; do
 	privmsg $truenick $line
 done
 

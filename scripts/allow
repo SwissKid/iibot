@@ -15,22 +15,12 @@
 #
 # swiss <swiss@veryoblvio.us>
 #######################################################
-set -- $@
-channel=$1
-shift
-truenick=$1
-shift
-command=$1
-shift
-rest=$@
-. runningconf.cnf
-. functions
 if [ "$truenick" == "$owner" ]; then
-	if [ "$command" == 'allow' ]; then
-		echo $rest >> ./allow/$channel
-		msgowner "allowing $rest on $channel"
-	elif [ "$command" == 'deny' ]; then
-		sed -ie "s/$rest//g" ./allow/$channel
+	if [ "$subcommand" == 'allow' ]; then
+		echo $subquery >> ./allow/$channel
+		msgowner "allowing $subquery on $channel"
+	elif [ "$subcommand" == 'deny' ]; then
+		sed -ie "s/$subquery//g" ./allow/$channel
 		msgowner "allow/$channel contains:"
 		msgowner "$(cat ./allow/$channel)"
 	fi

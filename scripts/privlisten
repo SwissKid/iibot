@@ -1,12 +1,8 @@
 #!/bin/bash
 ##This script will open a private listening channel with the person requesting it.
 ##This is for special listening for those who don't want to fill a channel.
-truenick=$1
-shift
-source functions
 echo "Privlisten with $truenick initiated" >&3
-. ./functions
-if [ -z "$@" ]; then
+if [ -z "$query" ]; then
 	if [ -e "in/$truenick" ] && [ "$(cat in/$truenick)" == "true" ]; then
 		echo "$truenick is trying to start 2 queries!" >&3
 		echo "false" > "in/$truenick"
@@ -44,7 +40,7 @@ if [ -z "$@" ]; then
 			privmsg $truenick "You seem to have taken too long, or I have a bug. Try again!"
 		fi
 	fi
-elif [ "$@" == 'clear' ]; then
+elif [ "$query" == 'clear' ]; then
 	if [ -d "$ircdir/$server/$truenick/" ]; then
 		rm -r $ircdir/$server/$truenick
 		echo "$truenick's query has been reset."
@@ -53,6 +49,6 @@ elif [ "$@" == 'clear' ]; then
 	fi
 	exit 0
 else 
-	echo "I'm sorry, I don't understand what you mean by \"$@\""
+	echo "I'm sorry, I don't understand what you mean by \"$query\""
 fi
 exit 0

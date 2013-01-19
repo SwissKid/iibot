@@ -29,14 +29,13 @@ function startii(){
 rm -r "$ircdir/$server/"
 mkdir -p "$ircdir/$server/$owner/"
 touch "$ircdir/$server/$owner/out"
-source runningconf.cnf
-source ./functions
-source ./extrafunc
+. runningconf.cnf
+. extrafunc
+setdebug
 while true; do 
-	echo "ii starting up!" >&1
+	echo "ii starting up!"
 	$iidir/ii -s $server -n $nick -f "Iamabot" -i $ircdir &
-	iipid="$!"
-	export iipid
+	export iipid="$!"
 	echo "The PID for ii is $iipid" >&3
 	echo $iipid > iipid.txt
 	sleep 3
@@ -49,7 +48,7 @@ while true; do
 	done
 	msgowner "I AM READY"
 	ownermessage &
-	./register
+	./private/register
 	wait "$iipid"
 	echo "ii seems to have crashed, should be restarting now!" >&2
 done 

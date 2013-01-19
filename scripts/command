@@ -1,28 +1,6 @@
 #!/bin/bash
-set -- $@
-channel=$1
-shift
-truenick=$1
-shift
-commandold=$1
-entire=$@
-shift
-rest=$@
-command=${commandold,,}
 
-
-function allowcheck() {
-echo "Allowcheck on $swissbox by $truenick" >3&
-if [ "${channel:0:1}" == '#' ];then
-	allowed=$(cat "./allow/$channel")
-else 
-	allowed=$(cat "./allow/priv")
-fi
-if [[ "$allowed" != *$@* ]]; then
-	echo "This functionality is disabled for $channel"
-	exit 0
-fi
-}
+#. functions
 ##specialized commands for the privmsgs. Not needed yet.
 #if [ "$truenick" == "$channel" ]; then
 #
@@ -33,9 +11,17 @@ fi
 
 
 
+echo "scripts/command: scripts/command RECIEVED" >&4
+echo "scripts/command: $channel is the channel, $truenick is the truenick, $fullcommand is the command, and $rest is the rest" >&4
+echo "scripts/command: maybe ${fullcommand%% *} works?" >&4
+export command=${fullcommand%% *}
+export query=${fullcommand#* }
+export subcommand=${query%% *}
+export subquery=${query#* }
 #lets start with help
+echo "scripts/command: gonna check with $command as the command" >&4
 if [ "$command" == 'help' ]; then
-	./scripts/help $truenick ${rest,,}
+	./scripts/help
 ##main search ( swissbox
 elif [ "$command" == 'search' ]; then 
 	allowcheck swissbox
@@ -71,6 +57,7 @@ elif [ "$command" == 'time' ]; then
 
 ##googling. Incredibly annoying, disabled by default.
 elif [ "$command" == 'google' ]; then
+	echo "scripts/command: googlin with Google" >&4
 	allowcheck google
 	./scripts/google $truenick $rest
 elif [ "$command" == 'bannedwords' ]; then

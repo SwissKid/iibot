@@ -1,16 +1,16 @@
 #!/bin/bash
 ##Ownercommand (base dir)
-msg=$@
-source ./functions
+export msg=$@
+. functions
 set -- $msg
-command=${1,,}
+command=${1}
 shift
 channel=$1
 shift
 message=$@
 if [ "${command:0:1}" == '!' ]; then
 #if the commands start with ! then they're seperated!
-	msgowner `./scripts/ownercommand $msg`
+	msgowner $(./scripts/ownercommand)
 else
 	echo "$0 -- Master wants me to $command $channel and $message" >&3
 	if [ "${channel:0:1}" != "#" ]; then

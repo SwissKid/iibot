@@ -8,17 +8,34 @@ function msgowner() {
 echo "/privmsg $owner :$@" > "$ircdir/$server/in"
 }
 
+##send private messages to the people! Also pretty common.
+function privmsg() {
+	set -- $@
+	name=$1
+	shift
+	echo "/privmsg $name :$@" > "$ircdir/$server/in"
+}
+## General Commanding, 
+function commandme(){
+	channel=$@
+	echo "./commandme $channel  > "$ircdir/$server/$channel/in"" >&3
+	./commandme $channel  > "$ircdir/$server/$channel/in"
+}
+
+
 ##Format search results nicely, I do this often enough it should be a function.
 function searchresults() {
+	announce="$1"
 	##Will write it's own lines to tosay.txt unless told "self"
 	lines=$(wc -l < results/searchresults.txt)
 	if [ "$lines" == "1" ]; then
 		echo "One Line" >&3
-		[[ ! -z "$@" ]] && [[ "$@" != "self" ]] && echo -n "The only result is: " > tosay.txt
+		echo "should I announce, or is $announce gonna do it" >&3
+		[[ -z $announce ]] && echo -n "The only result is: " > tosay.txt
 		echo " $(cat results/searchresults.txt)." >> tosay.txt
 	else
 		echo "$lines Lines" >&3
-		[ "$@" != "self" ] && echo "The found files are: " > tosay.txt
+		[[ -z $announce ]] && echo "The found files are: " > tosay.txt
 		n=2
 		cat results/searchresults.txt | while read line; do
 			if [ "$n" -le "$lines" ]; then
@@ -31,94 +48,104 @@ function searchresults() {
 		done
 	fi
 	cat tosay.txt
+	unset announce
+	cat tosay.txt >&3
 }
 
 
-##send private messages to the people! Also pretty common.
-function privmsg() {
-	set -- $@
-	name=$1
-	shift
-	echo "/privmsg $name :$@" > "$ircdir/$server/in"
-}
 
 
-function commandme(){
-	channel=$@
-	echo "./commandme $channel  > "$ircdir/$server/$channel/in"" >&3
-	./commandme $channel  > "$ircdir/$server/$channel/in"
-}
 
 
 function timekill(){
-set -- $@
-timesleep=$1
-shift
-tokill=$@
-echo "Killing $@ in $timesleep seconds." >&3
-sleep $timesleep
-kill -9 `cat $tokill`
+	set -- $@
+	timesleep=$1
+	shift
+	tokill=$@
+	echo "Killing $@ in $timesleep seconds." >&3
+	sleep $timesleep
+	kill -9 `cat $tokill`
 }
 
 function timequit(){
-set -- $@
-timesleep=$1
-shift
-toquit=$@
-echo "echoing false into in/$@ in $timesleep seconds." >&3
-sleep $timesleep
-echo 'false' > "in/$toquit"
-echo "echoing false into in/$toquit now" >&3
+	set -- $@
+	timesleep=$1
+	shift
+	toquit=$@
+	echo "echoing false into in/$@ in $timesleep seconds." >&3
+	sleep $timesleep
+	echo 'false' > "in/$toquit"
+	echo "echoing false into in/$toquit now" >&3
 }
 
 
 ##Because tput could be made nicer for what I'm doing!
 function maketext(){
-if tput init; then
-	set -- $@
-	if [ -z "$2" ]; then
-		style=$1
-		case "$style" in
-			bold) tput bold;;
-			normal | reset | standard | none| end) tput sgr0;;
-			blue)  tput setf 1;;
-			green) tput setf 2;;
-			cyan)  tput setf 3;;
-			red)   tput setf 4;;
-			purple)tput setf 5;;
-			brown) tput setf 6;;
-			white) tput setf 7;;
-			black) tput setf 8;;
-			underline | under) tput smul;;
-		esac
-	elif [ "$2" == 'on' ]; then
-		color1=$1
-		color2=$3
-		case "$color1" in
-			bold) tput bold;;
-			normal | reset | standard | none| end) tput sgr0;;
-			blue)  tput setf 1;;
-			green) tput setf 2;;
-			cyan)  tput setf 3;;
-			red)   tput setf 4;;
-			purple)tput setf 5;;
-			brown) tput setf 6;;
-			white) tput setf 7;;
-			black) tput setf 8;;
-			underline | under) tput smul;;
-		esac
-		case "$color2" in
-			blue)  tput setb 1;;
-			green) tput setb 2;;
-			cyan)  tput setb 3;;
-			red)   tput setb 4;;
-			purple)tput setb 5;;
-			brown) tput setb 6;;
-			white) tput setb 7;;
-			black) tput setb 8;;
-		esac
-	else
-		echo "You broke tput" >&2
+	if tput init; then
+		set -- $@
+		if [ -z "$2" ]; then
+			style=$1
+			case "$style" in
+				bold) tput bold;;
+				normal | reset | standard | none| end) tput sgr0;;
+				blue)  tput setf 1;;
+				green) tput setf 2;;
+				cyan)  tput setf 3;;
+				red)   tput setf 4;;
+				purple)tput setf 5;;
+				brown) tput setf 6;;
+				white) tput setf 7;;
+				black) tput setf 8;;
+				underline | under) tput smul;;
+			esac
+		elif [ "$2" == 'on' ]; then
+			color1=$1
+			color2=$3
+			case "$color1" in
+				bold) tput bold;;
+				normal | reset | standard | none| end) tput sgr0;;
+				blue)  tput setf 1;;
+				green) tput setf 2;;
+				cyan)  tput setf 3;;
+				red)   tput setf 4;;
+				purple)tput setf 5;;
+				brown) tput setf 6;;
+				white) tput setf 7;;
+				black) tput setf 8;;
+				underline | under) tput smul;;
+			esac
+			case "$color2" in
+				blue)  tput setb 1;;
+				green) tput setb 2;;
+				cyan)  tput setb 3;;
+				red)   tput setb 4;;
+				purple)tput setb 5;;
+				brown) tput setb 6;;
+				white) tput setb 7;;
+				black) tput setb 8;;
+			esac
+		else
+			echo "You broke tput" >&2
+		fi
 	fi
+}
+##For Command
+function allowcheck() {
+echo "Allowcheck on $swissbox by $truenick" >3&
+if [ "${channel:0:1}" == '#' ];then
+	allowed=$(cat "./allow/$channel")
+else 
+	allowed=$(cat "./allow/priv")
+fi
+if [[ "$allowed" != *$@* ]]; then
+	echo "This functionality is disabled for $channel"
+	exit 0
 fi
 }
+export -f allowcheck
+export -f msgowner
+export -f timequit
+export -f maketext
+export -f privmsg
+export -f searchresults
+export -f timekill

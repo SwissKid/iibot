@@ -1,12 +1,7 @@
 #!/bin/bash
-command=$1
-shift
-rest=$@
-. functions
-truecommand=$(echo ${command:0:1} | tr [:upper:] [:lower:] )
-if [ "$truecommand" == 'bannedwords' ] ; then
-	./scripts/banword $owner $@
-	echo "$0 --$@ executed to bannedwords by $owner." >&3
+if [ "${command#!}" == 'bannedwords' ] ; then
+	./scripts/banword $owner ${msg#.* }
+	echo "ownercommand: $msg executed to bannedwords by $owner." >&3
 else
-	echo "$0 -- $truecommand is illegal" >&2
+	echo "ownercommand: $command is illegal" >&2
 fi

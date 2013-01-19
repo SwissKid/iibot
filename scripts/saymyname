@@ -1,16 +1,16 @@
 #!/bin/bash
-msg=$@
-set -- $msg
-channel=$1
-shift
-truenick=$1
-shift
-rest=${@#swissboxbot:}
-words=$(echo $rest | tr [:upper:] [:lower:])
+echo "SAYMYNAME RECIEVED" >&3
+echo "$rest is rest $truenick is truenick $channel is channel and $command is command" >&4
+rest=${rest#swissboxbot: }
+echo "$rest is the new rest" >&4
+words=${rest,,}
+echo "$words are the new words" >&4
+echo "${words:0:1} is words:0:1" >&4
 if [ "${words:0:1}" == '!' ]; then
-	command=${rest:1}
-	./scripts/command $channel $truenick $command
-	echo "./scripts/command $channel $truenick $command" >&3
+	export fullcommand=${rest:1}
+	echo "$fullcommand is the new command" >&4
+	./scripts/command
+	echo "sent to command!" >&4
 elif [ "$channel" != "$truenick" ]; then
 	if [[ "$rest" == *RAGE* ]] ; then
 		echo "RAAAAAAAAAAAAAAAAAAAAGE"
