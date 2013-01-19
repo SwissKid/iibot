@@ -24,6 +24,15 @@ amount=$1
 shift
 typemedia=$1
 
+if [[ ${typemedia,,} == manga ]]
+    then extraargs="-mindepth 2"
+    echo "Doubledepth" >&4
+    else
+	extraargs="-mindepth 1"
+    echo "Singledepth" >&4
+fi
+
+
 function toobig() {
 	echo "I'm sorry, $number of $amount is a ridiculous number. Please choose something better."
 	exit 0
@@ -33,7 +42,7 @@ function toobig() {
 echo "checking last $number of $amount in $typemedia" >&2
 if [ "$amount" == "days" ] || [ "$amount" == "day" ]; then
 	if [ "$number" -le 11 ]; then
-		find $filesdir/$typemedia/ -maxdepth 1 -mtime -"$number" -printf "%f \n" > results/searchresults.txt
+		find $filesdir/$typemedia/ $extraargs -maxdepth 2 -mtime -"$number" -printf "%f \n" > results/searchresults.txt
 		sed -ie 1d results/searchresults.txt
 	else
 		toobig
@@ -41,22 +50,22 @@ if [ "$amount" == "days" ] || [ "$amount" == "day" ]; then
 elif [ "$amount" == "hours" ]; then
 	if [ "$number" -le 30 ]; then
 		time=$(expr $number "*" 60)
-		find $filesdir/$typemedia/ -maxdepth 1 -mmin -"$time" -printf '%f \n' > results/searchresults.txt
+		find $filesdir/$typemedia/ $extraargs -maxdepth 2 -mmin -"$time" -printf '%f \n' > results/searchresults.txt
 		sed -ie 1d results/searchresults.txt
 	else
 		toobig
 	fi
 elif [ "$amount" == "minutes" ]; then
 	if [ "$number" -le 120 ]; then
-		find $filesdir/$typemedia/ -maxdepth 1 -mmin -"$number" > results/searchresults.txt
+		find $filesdir/$typemedia/ $extraargs -maxdepth 2 -mmin -"$number" > results/searchresults.txt
 		sed -ie 1d results/searchresults.txt
 	else
 		toobig
 	fi
 elif [ "$amount" == "files" ]; then
 	if [ "$number" -le 5 ]; then
-		echo "ls -t -c1 $filesdir/$typemedia/ | head -n 5 > results/searchresults.txt" >&4
-		ls -t -c1 $filesdir/$typemedia/ | head -n 5 > results/searchresults.txt
+		echo "find $filesdir/$typemedia/ -printf \"%T@ %P \\n\" | sort -n | grep \"/\"" >&4
+		find $filesdir/$typemedia/ -printf "%T@ %P \n" | sort -n | grep "/" | sed "s/^[^ ]*//g" | tail -n5 > results/searchresults.txt
 	else
 		toobig
 	fi

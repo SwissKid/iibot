@@ -2,7 +2,7 @@
 #Making this a script so that variables can be put in place.
 . configuration
 
-if [ -z "$@" ]; then
+if [ "$@" == "help" ]; then
 	cat << END
 All commands to $botname must have $botname: !command. Without the name or the
 '!' the command will not be processed. Here are a few short commands:
@@ -44,7 +44,7 @@ elif [ "$@" == "manga" ]; then
 !manga Help:
 The manga command simply searches the manga directory for the search term.
 Useage: "!manga [Search term]"
-END 
+END
 
 elif [ "$@" == "request" ]; then
 	cat <<END

@@ -36,14 +36,15 @@ function searchresults() {
 	else
 		echo "$lines Lines" >&3
 		[[ -z $announce ]] && echo "The found files are: " > tosay.txt
-		n=2
+		distance=2
 		cat results/searchresults.txt | while read line; do
-			if [ "$n" -le "$lines" ]; then
+			if [ "$distance" -le "$lines" ]; then
 				echo -n "$line, " >> tosay.txt
-				n=`expr $n + 1`;
+				distance=`expr $distance + 1`;
 			else
 				echo "and $line." >> tosay.txt
-				n=`expr $n + 1`;
+				distance=`expr $distance + 1`;
+				break
 			fi
 		done
 	fi

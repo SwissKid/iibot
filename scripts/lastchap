@@ -5,7 +5,16 @@ if [[ "$query" == */* ]] ; then
 	exit 0
 fi
 echo "$subcommand is subcommand, $subquery is subquery, $query is query, $command is command, $fullcommand is full command" >&4
-if [ "${subcommand,,}" == 'ecchi' ]; then
+if [ "${subcommand,,}" == 'hentai' ]; then
+	resulting=$(ls $filesdir/manga/Hentai/ | grep -i "$subquery")
+	echo "scripts/lastchap: searched for $subquery in Ecchi and got $resulting" >&3
+	[ -z "$resulting" ] && echo "Didn't find it in the first one, trying the first word" >&3 &&  resulting=$(ls $filesdir/manga/Hentai | grep -i "${subquery%% *}")
+	if [ -n "$resulting"  ]; then
+		echo "The latest chapter we have is: $(ls "$filesdir/manga/Hentai/$resulting" | tail -n 1)"
+	else
+		echo "Whoops, I couldn't find $subquery in Hentai. Why don't you try a standard search?"
+	fi
+elif [ "${subcommand,,}" == 'ecchi' ]; then
 	resulting=$(ls $filesdir/manga/Ecchi/ | grep -i "$subquery")
 	echo "scripts/lastchap: searched for $subquery in Ecchi and got $resulting" >&3
 	[ -z "$resulting" ] && echo "Didn't find it in the first one, trying the first word" >&3 &&  resulting=$(ls $filesdir/manga/Ecchi | grep -i "${subquery%% *}")
@@ -15,11 +24,11 @@ if [ "${subcommand,,}" == 'ecchi' ]; then
 		echo "Whoops, I couldn't find $subquery in Ecchi. Why don't you try a standard search?"
 	fi
 else
-	resulting=$(ls $filesdir/manga/ | grep -i "$query")
+	resulting=$(ls $filesdir/manga/Series/ | grep -i "$query")
 	echo "scripts/lastchap: searched for $subquery and got $resulting" >&3
-	if [ -n "$resulting" ] && [ -d "$filesdir/manga/$resulting" ]
+	if [ -n "$resulting" ] && [ -d "$filesdir/manga/Series/$resulting" ]
 	then
-		echo "The latest chapter we have is: $(ls "/home/sftp/mount/hdd2/manga/$resulting" | tail -n 1)"
+		echo "The latest chapter we have is: $(ls "/home/sftp/mount/hdd2/manga/Series/$resulting" | tail -n 1)"
 	else
 		echo "Whoops, I couldn't find $query"
 	fi

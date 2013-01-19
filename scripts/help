@@ -1,5 +1,6 @@
 #!/bin/bash
 ##This should be a help script, hopefully it works nicely.
+echo help executing >&3
 help/basiccommands $query | while read line; do
 	privmsg $truenick $line
 done

@@ -1,9 +1,13 @@
 #!/bin/bash
-if [[ $subcommand == Ecchi ]]; then
+if [[ ${subcommand,,} == ecchi ]]; then
 	ls $filesdir/manga/Ecchi/ | grep -i "$subquery" > results/searchresults.txt
 	echo "Searching Ecchi...."
+elif [[ ${subcommand,,} == hentai ]]; then
+	ls $filesdir/manga/Hentai/ | grep -i "$subquery" > results/searchresults.txt
+	echo "Searching Hentai...."
 else
-	ls $filesdir/manga/ | grep -i "$query" > results/searchrestults.txt
+	echo "ls $filesdir/manga/Series/ | grep -i \"$query\" > results/searchresults.txt" >&4
+	ls $filesdir/manga/Series/ | grep -i "$query" > results/searchresults.txt
 fi
 ##Removed filesgrep and hotswap as I have migrated to the 3tb drive
 searchresults
