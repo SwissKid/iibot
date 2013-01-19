@@ -87,7 +87,7 @@ function maketext(){
 			style=$1
 			case "$style" in
 				bold) tput bold;;
-				normal | reset | standard | none| end) tput sgr0;;
+				normal|reset|standard|none|end) tput sgr0;;
 				blue)  tput setf 1;;
 				green) tput setf 2;;
 				cyan)  tput setf 3;;

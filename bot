@@ -46,11 +46,11 @@ if [ "$ops" ]; then
 	eval set -- $ops
 	while true; do
 		case $1 in
-			-D| --[Dd]aemon)daemon="true";echo "Daemon mode enabled"; shift;;
-			-c| --config*) conf="$2"; shift 2;;
-			-h| --help) usage; shift;;
-			-o| --logfile) logfile="$2"; shift 2 ;;
-			-F| --[fF]oreground) daemon="false"; shift ;;
+			-D|--[Dd]aemon)daemon="true";echo "Daemon mode enabled"; shift;;
+			-c|--config*) conf="$2"; shift 2;;
+			-h|--help) usage; shift;;
+			-o|--logfile) logfile="$2"; shift 2 ;;
+			-F|--[fF]oreground) daemon="false"; shift ;;
 			--logdir) logdir="$2"; shift 2 ;;
 			--debug | -d) if [ -z "$2" ]; then debuglevel=2; else if [[ "$2" -ge 1 ]] && [[ "$2" -le 5 ]];then debuglevel="$2"; else echo "The debug level is set to $2, which is not between 1 and 5."; exit 1; fi; fi; shift 2;;
 			--)shift;break;;
