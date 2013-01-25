@@ -19,6 +19,7 @@ export query=${fullcommand#* }
 export subcommand=${query%% *}
 export subquery=${query#* }
 #lets start with help
+. functions
 echo "scripts/command: gonna check with $command as the command" >&4
 if [ "$command" == 'help' ]; then
 	./scripts/help

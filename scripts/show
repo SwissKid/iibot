@@ -3,20 +3,8 @@ if [[ "$query" == */* ]] ; then
 	echo "Why don't you try and exploit someone else?"
 else
 	if [ -d "/home/sftp/mount/hdd2/anime/$query" ]; then
-		echo -ne "The files in $query are: " > tosay.txt
-		ls "/home/sftp/mount/hdd2/anime/$query" > searchresults.txt
-		lines=$(wc -l < searchresults.txt)
-		n=2
-		cat searchresults.txt | while read line; do
-			if [ "$n" -le "$lines" ]; then
-				echo -n "$line, " >> tosay.txt
-				n=`expr $n + 1`;
-			else
-				echo "and $line." >> tosay.txt
-				n=`expr $n + 1`;
-			fi
-		done
-	cat tosay.txt
+		ls "$filesdir/anime/$query/" > results/searchresults.txt
+		echo -e "The files in $query are: $(searchresults self)"
 	else
 		echo "Whoops, I couldn't find $query"
 	fi

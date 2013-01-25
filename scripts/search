@@ -6,7 +6,7 @@
 #
 # swiss <swiss@veryoblivio.us>
 #############################################################
-ls $filesdir/anime/ | grep -i "query" > results/searchresults.txt
+ls $filesdir/anime/ | grep -i "$query" > results/searchresults.txt
 linenumber=$(wc -l < results/searchresults.txt)
 if [ "$linenumber" == '0' ]; then
 	echo "No files found"
