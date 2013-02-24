@@ -2,9 +2,10 @@
 if [[ "$query" == */* ]] ; then
 	echo "Why don't you try and exploit someone else?"
 else
-	if [ -d "/home/sftp/mount/hdd2/anime/$query" ]; then
+	if [ -d "$filesdir/anime/$query" ]; then
 		ls "$filesdir/anime/$query/" > results/searchresults.txt
-		echo -e "The files in $query are: $(searchresults self)"
+		echo -e "The files in $query are: ">tosay.txt
+		searchresults self
 	else
 		echo "Whoops, I couldn't find $query"
 	fi

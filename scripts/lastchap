@@ -28,7 +28,7 @@ else
 	echo "scripts/lastchap: searched for $subquery and got $resulting" >&3
 	if [ -n "$resulting" ] && [ -d "$filesdir/manga/Series/$resulting" ]
 	then
-		echo "The latest chapter we have is: $(ls "/home/sftp/mount/hdd2/manga/Series/$resulting" | tail -n 1)"
+		echo "The latest chapter we have is: $(ls "$filesdir/manga/Series/$resulting" | tail -n 1)"
 	else
 		echo "Whoops, I couldn't find $query"
 	fi

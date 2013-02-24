@@ -13,11 +13,13 @@ if [ "$linenumber" == '0' ]; then
 	exit 0
 elif [ "$linenumber" != 1 ]; then
 	if [ $linenumber -le 5 ]; then
+		echo > tosay.txt
 		results=$(searchresults self )
 	else
 		results="That's way too many to display nicely. Please refine your search terms."
 	fi
 	echo "There were $linenumber files found: $results"
 else
-	echo -e "There was one file found. Its is: $(searchresults self)"
+	echo -ne "There was one file found. Its is: " > tosay.txt
+	searchresults self
 fi

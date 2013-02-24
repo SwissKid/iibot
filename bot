@@ -28,7 +28,8 @@ OPTIONS:
 		$(maketext bold)Default: $logdir $(maketext normal)
 	$(maketext bold)-c$(maketext reset) or $(maketext bold)--config$(maketext reset) (file)
 		Choose an alternate configuration file 
-		$(maketext bold)Default: $iidir/configuration$(maketext normal)
+		$(maketext bold)Default: $iidir/configuration
+		$(maketext normal)
 EOF
 exit 0
 }
@@ -48,7 +49,7 @@ if [ "$ops" ]; then
 		case $1 in
 			-D|--[Dd]aemon)daemon="true";echo "Daemon mode enabled"; shift;;
 			-c|--config*) conf="$2"; shift 2;;
-			-h|--help) usage; shift;;
+			-h|--help) usage;;
 			-o|--logfile) logfile="$2"; shift 2 ;;
 			-F|--[fF]oreground) daemon="false"; shift ;;
 			--logdir) logdir="$2"; shift 2 ;;

@@ -26,7 +26,6 @@ function commandme(){
 ##Format search results nicely, I do this often enough it should be a function.
 function searchresults() {
 	announce="$1"
-	echo > tosay.txt
 	##Will write it's own lines to tosay.txt unless told "self"
 	lines=$(wc -l < results/searchresults.txt)
 	if [ "$lines" == "1" ]; then
@@ -36,11 +35,10 @@ function searchresults() {
 		    then
 		    echo "I'm gonna announce" >&3
 		    echo -n "The only result is: " > tosay.txt
-		    echo " $(cat results/searchresults.txt)." >> tosay.txt
 		else
 		    echo "I'm not gonna announce" >&3
-		    echo " $(cat results/searchresults.txt)." > tosay.txt
 		fi
+		    echo " $(cat results/searchresults.txt)." >> tosay.txt
 	else
 		echo "$lines Lines" >&3
 		[[ -z $announce ]] && echo "The found files are: " > tosay.txt

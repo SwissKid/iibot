@@ -1,23 +1,25 @@
 #!/bin/bash
 truenick=$1
-
-if [ "$subcommand" != 'anime' ] && [ "$subcommand" != 'manga' ]; then
+type=${subquery%% *}
+file=${subquery##* }
+if [ "$type" != 'anime' ] && [ "$type" != 'manga*' ]; then
 	privmsg $truenick "I'm sorry, i only have an anime or manga list"
+	echo "$subcommand was the sub command, $query was the query. $type is the type" >&3
 	exit 0
 fi
 
-if [ "$command" == 'add' ]; then 
-	search=$(grep -i "$subquery" ./request/$subcommand)
+if [ "$subcommand" == 'add' ]; then 
+	search=$(grep -i "$file" ./request/$type)
 	if [ "$search" != "" ] ; then
 		privmsg $truenick "Sorry, this item has already been requested!"
 	else
-		echo "$truenick:	$subquery" >> "./request/$subcommand"
-		echo "$truenick: Your request for $subquery has been added!"
+		echo "$truenick:	$file" >> "./request/$type"
+		echo "$truenick: Your request for $file has been added!"
 	fi
-elif [ "$command" == 'search' ]; then 
-	search=$(grep -i "$subquery" ./request/$subcommand)
+elif [ "$subcommand" == 'search' ]; then 
+	search=$(grep -i "$file" ./request/$type)
 	if [ "$search" != "" ] ; then
-		grep -i "$subquery" ./request/$subcommand | while read line; do
+		grep -i "$file" ./request/$type | while read line; do
 			reqnick=$(echo $line | sed -e 's/:.*$//')
 			show=$(echo $line | sed -e 's/^.*://')
 		echo "$show is requested by $reqnick"
@@ -25,28 +27,28 @@ elif [ "$command" == 'search' ]; then
 	else
 		echo "This item doesn't seem to be in the list!"
 	fi
-elif [ "$command" == 'list' ]; then
-	cat "./request/$subcommand" | while read line; do
+elif [ "$subcommand" == 'list' ]; then
+	cat "./request/$type" | while read line; do
 		privmsg $truenick "$line"
 	done
-elif [ "$command" == 'remove' ]; then 
-	removal=$(grep -i "$subquery" ./request/$subcommand)
+elif [ "$subcommand" == 'remove' ]; then 
+	removal=$(grep -i "$file" ./request/$type)
 	if [ "$removal" == "" ]; then
 		privmsg $truenick "I can't find that on the list!"
 	else
 		reqnick=$(echo $removal | sed -e 's/:.*$//')
-		if [[ "$reqnick" == *"$subquery"* ]]; then
+		if [[ "$reqnick" == *"$file"* ]]; then
 			privmsg $truenick "Are you really trying to remove all of $reqnick's requests? I can't let you do that"
 			exit 0
 		else
-			sed -ie "s/$removal//" "./request/$subcommand"
+			sed -ie "s/$removal//" "./request/$type"
 			privmsg $truenick "Removed $removal"
 			show=$(echo $removal | sed -e 's/*.*://')
 			privmsg '#swissbox' "$truenick has removed $show! Sounds likes $reqnick's request got fulfilled!"
 		fi
 	fi
-elif [ "$command" == 'show' ]; then
-	grep $subquery "./request/$subcommand" | while read line; do
+elif [ "$subcommand" == 'show' ]; then
+	grep $file "./request/$type" | while read line; do
 		privmsg $truenick "$line"
 	done
 else 
